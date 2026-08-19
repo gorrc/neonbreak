@@ -1,0 +1,36 @@
+# WordPress core (installed separately)
+/wp-admin/
+/wp-includes/
+/index.php
+/license.txt
+/readme.html
+/xmlrpc.php
+/wp-*.php
+
+# Local configuration and server files
+/wp-config.php
+/.htaccess
+/.env
+/.env.*
+!/.env.example
+
+# Generated and user-provided content
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade/
+/wp-content/backups*/
+/wp-content/debug.log
+
+# Bundled WordPress themes and plugins
+/wp-content/themes/twentytwenty*/
+/wp-content/plugins/akismet/
+/wp-content/plugins/hello.php
+
+# Local archives and operating-system files
+/*.zip
+Thumbs.db
+.DS_Store
+
+# IDE settings
+/.idea/
+/.vscode/

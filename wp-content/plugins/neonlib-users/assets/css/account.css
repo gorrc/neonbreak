@@ -1,0 +1,169 @@
+.neonlib-account {
+	--neonlib-accent: #5b5bd6;
+	--neonlib-border: #dfe2e8;
+	--neonlib-muted: #626b7a;
+	max-width: 1040px;
+	margin: 2rem auto;
+}
+
+.neonlib-auth-grid,
+.neonlib-dashboard-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1.5rem;
+}
+
+.neonlib-panel {
+	padding: clamp(1.25rem, 3vw, 2rem);
+	border: 1px solid var(--neonlib-border);
+	border-radius: 16px;
+	background: #fff;
+	box-shadow: 0 12px 35px rgba(25, 32, 56, 0.07);
+}
+
+.neonlib-panel label,
+.neonlib-panel input,
+.neonlib-panel textarea,
+.neonlib-panel select {
+	display: block;
+	width: 100%;
+}
+
+.neonlib-panel input,
+.neonlib-panel textarea,
+.neonlib-panel select {
+	box-sizing: border-box;
+	margin-top: 0.4rem;
+	padding: 0.75rem 0.9rem;
+	border: 1px solid var(--neonlib-border);
+	border-radius: 8px;
+}
+
+.neonlib-panel textarea {
+	min-height: 6rem;
+	resize: vertical;
+}
+
+.neonlib-panel button,
+.neonlib-button {
+	display: inline-block;
+	padding: 0.75rem 1rem;
+	border: 0;
+	border-radius: 8px;
+	background: var(--neonlib-accent);
+	color: #fff;
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.neonlib-panel button:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+.neonlib-button--secondary {
+	background: #eef0ff;
+	color: #3737a6;
+}
+
+.neonlib-panel .neonlib-button--danger {
+	background: #b42318;
+}
+
+.neonlib-dashboard-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+.neonlib-eyebrow {
+	margin: 0 0 0.25rem;
+	color: var(--neonlib-accent);
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.neonlib-dashboard-header h2 {
+	margin: 0;
+}
+
+.neonlib-panel dl {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	gap: 0.5rem 1rem;
+}
+
+.neonlib-panel dt {
+	color: var(--neonlib-muted);
+}
+
+.neonlib-panel dd {
+	margin: 0;
+}
+
+.neonlib-subscription-list {
+	display: grid;
+	gap: 0.75rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.neonlib-subscription-list li {
+	display: grid;
+	gap: 0.25rem;
+	padding: 0.75rem;
+	border: 1px solid var(--neonlib-border);
+	border-radius: 0.5rem;
+}
+
+.neonlib-subscription-list details {
+	padding-top: 0.5rem;
+	border-top: 1px solid var(--neonlib-border);
+}
+
+.neonlib-subscription-list summary {
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.neonlib-subscription-list form {
+	display: grid;
+	gap: 0.75rem;
+	margin-top: 0.75rem;
+}
+
+.neonlib-notice {
+	margin: 1rem 0;
+	padding: 0.85rem 1rem;
+	border-radius: 8px;
+}
+
+.neonlib-notice--error {
+	border: 1px solid #e6a3a3;
+	background: #fff1f1;
+	color: #8c1d1d;
+}
+
+.neonlib-notice--success {
+	border: 1px solid #8ccda3;
+	background: #effbf3;
+	color: #176b38;
+}
+
+@media (max-width: 720px) {
+	.neonlib-auth-grid,
+	.neonlib-dashboard-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.neonlib-dashboard-header {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+}

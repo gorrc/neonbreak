@@ -1,0 +1,5 @@
+.neonlib-admin .nav-tab-wrapper { margin-bottom: 1.25rem; }
+.neonlib-admin-filters { display: flex; gap: .5rem; margin: 1rem 0; }
+.neonlib-admin-table td { vertical-align: middle; }
+.neonlib-admin-table form { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+.neonlib-admin-card { max-width: 720px; padding: 1rem 1.5rem; border: 1px solid #c3c4c7; background: #fff; }
