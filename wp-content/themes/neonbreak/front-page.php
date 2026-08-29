@@ -20,10 +20,11 @@
       <div><p class="eyebrow">What we do</p><h2>Web applications, AI and cloud infrastructure.</h2></div>
     </div>
     <div class="capability-grid">
-      <article class="capability-card"><span class="card-index">01 / WEB APPLICATIONS</span><h3>PHP, Node.js and Firebase</h3><p>Custom applications in PHP or Node.js. For suitable products, Firebase provides authentication, data, storage and hosting in one Google Cloud-connected stack.</p></article>
-      <article class="capability-card"><span class="card-index">02 / AI SYSTEMS</span><h3>Managed or custom AI</h3><p>Google and AWS services for managed implementations, or custom model pipelines through providers such as Groq and Fireworks when latency, model choice or inference cost needs tighter control.</p></article>
-      <article class="capability-card"><span class="card-index">03 / CLOUD</span><h3>AWS and Google Cloud</h3><p>Applications deployed on the cloud platform that fits their architecture, including compute, storage, databases, networking, monitoring and production releases.</p></article>
+      <article class="capability-card"><span class="card-index">01 / WEB APPLICATIONS</span><h3>PHP, Node.js and Firebase</h3><p>Custom applications in PHP or Node.js. For suitable products, Firebase provides authentication, data, storage and hosting in one Google Cloud-connected stack.</p><div class="capability-links"><a href="<?php echo esc_url( home_url( '/services/php-nodejs/' ) ); ?>">PHP &amp; Node.js →</a><a href="<?php echo esc_url( home_url( '/services/firebase/' ) ); ?>">Firebase →</a></div></article>
+      <article class="capability-card"><span class="card-index">02 / AI SYSTEMS</span><h3>Managed or custom AI</h3><p>Google and AWS services for managed implementations, or custom model pipelines through providers such as Groq and Fireworks when latency, model choice or inference cost needs tighter control.</p><div class="capability-links"><a href="<?php echo esc_url( home_url( '/services/applied-ai/' ) ); ?>">Applied AI →</a></div></article>
+      <article class="capability-card"><span class="card-index">03 / CLOUD</span><h3>AWS and Google Cloud</h3><p>Applications deployed on the cloud platform that fits their architecture, including compute, storage, databases, networking, monitoring and production releases.</p><div class="capability-links"><a href="<?php echo esc_url( home_url( '/services/cloud-infrastructure/' ) ); ?>">Cloud Infrastructure →</a></div></article>
     </div>
+    <div class="services-overview-link"><a href="<?php echo esc_url( home_url( '/services/' ) ); ?>">View all services →</a></div>
   </div>
 </section>
 
@@ -81,10 +82,10 @@
         <div><span class="decision-kicker">01 · Application runtime</span><h3>PHP and Node.js</h3></div>
       </header>
       <div class="decision-columns">
-        <section><span class="decision-status good">PHP fits</span><h4>Content, administration and transactions</h4><p>PHP is a practical choice for server-rendered sites, WordPress, customer portals and business applications built around forms, records and relational data.</p><ul><li>Mature hosting and framework ecosystem</li><li>Direct fit for WordPress development</li><li>Clear request-and-response application model</li></ul></section>
+        <section><span class="decision-status good">PHP fits</span><h4>Content, commerce and transactions</h4><p>PHP is a practical choice for WordPress, Magento, customer portals and business applications built around forms, records and relational data.</p><ul><li>WordPress and Magento development</li><li>CakePHP as our preferred rapid application development framework</li><li>Laravel when its ecosystem or an existing team makes it the practical choice</li></ul></section>
         <section><span class="decision-status good">Node.js fits</span><h4>Real-time and event-driven applications</h4><p>Node.js is useful when the application handles live updates, queues, streaming APIs or benefits from sharing JavaScript types and packages between frontend and backend.</p><ul><li>Non-blocking I/O for concurrent connections</li><li>Strong JavaScript and TypeScript ecosystem</li><li>Natural fit for API and integration services</li></ul></section>
       </div>
-      <footer class="decision-footer"><p><strong>They are not mutually exclusive:</strong> a project can use PHP for its core business application and Node.js for a clearly separated real-time or background-processing service.</p></footer>
+      <footer class="decision-footer"><p><strong>They are not mutually exclusive:</strong> a project can use PHP for its core business application and Node.js for a clearly separated real-time or background-processing service.</p><a href="<?php echo esc_url( home_url( '/services/php-nodejs/' ) ); ?>">How we work with PHP &amp; Node.js →</a></footer>
     </article>
     <article class="decision-card">
       <header class="decision-title">
@@ -119,7 +120,7 @@
         <section><span class="decision-status good">Google / AWS</span><h4>Integrated enterprise AI platforms</h4><p>Google Cloud and AWS combine models with identity, storage, monitoring, governance and other cloud services. That integration is useful when those controls are part of the requirement.</p><ul><li>Centralised access and cloud governance</li><li>Integration with existing cloud data</li><li>Broad managed-service ecosystem</li></ul></section>
         <section><span class="decision-status good">Groq / Fireworks</span><h4>Focused model inference APIs</h4><p>Specialised providers can offer a smaller integration surface and additional choices for open models, latency and inference pricing when a complete enterprise platform is unnecessary.</p><ul><li>Direct, API-focused implementation</li><li>Choice of supported open models</li><li>Costs measured against the actual workload</li></ul></section>
       </div>
-      <footer class="decision-footer"><p><strong>The model is only one component:</strong> retrieval, permissions, evaluation, logging and fallback behaviour still need to be designed in the application.</p></footer>
+      <footer class="decision-footer"><p><strong>The model is only one component:</strong> retrieval, permissions, evaluation, logging and fallback behaviour still need to be designed in the application.</p><a href="<?php echo esc_url( home_url( '/services/applied-ai/' ) ); ?>">How we implement AI →</a></footer>
     </article>
     <article class="decision-card">
       <header class="decision-title">
@@ -130,7 +131,7 @@
         <section><span class="decision-status good">Cloud fits</span><h4>Applications with changing requirements</h4><p>Cloud platforms provide managed databases, object storage, queues, private networks, monitoring and capacity that can be changed without replacing the entire hosting environment.</p><ul><li>Scale individual components independently</li><li>Managed backups, regions and access controls</li><li>Infrastructure can be described and reproduced</li></ul></section>
         <section><span class="decision-status caution">Classic hosting fits</span><h4>Small and predictable workloads</h4><p>A conventional server or hosting plan can be simpler and cheaper for a stable website or application that does not need several managed services or rapid changes in capacity.</p><ul><li>Predictable monthly cost</li><li>Less infrastructure to configure</li><li>A better fit when scaling needs are modest</li></ul></section>
       </div>
-      <footer class="decision-footer"><p><strong>Cloud is not automatically cheaper:</strong> its advantage is service choice, automation and scaling. Costs still require monitoring and architecture limits.</p></footer>
+      <footer class="decision-footer"><p><strong>Cloud is not automatically cheaper:</strong> its advantage is service choice, automation and scaling. Costs still require monitoring and architecture limits.</p><a href="<?php echo esc_url( home_url( '/services/cloud-infrastructure/' ) ); ?>">How we use cloud infrastructure →</a></footer>
     </article>
   </div>
 </section>

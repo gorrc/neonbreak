@@ -1,3 +1,8 @@
+.entry-content:has(.neonlib-account) {
+	width: 100%;
+	max-width: 1180px !important;
+}
+
 .neonlib-account {
 	--neonlib-accent: #5b5bd6;
 	--neonlib-border: #dfe2e8;
@@ -19,6 +24,165 @@
 	border-radius: 16px;
 	background: #fff;
 	box-shadow: 0 12px 35px rgba(25, 32, 56, 0.07);
+}
+
+.neonlib-profile-panel {
+	grid-column: 1 / -1;
+	order: 1;
+}
+
+.neonlib-subscriptions-panel {
+	grid-column: 1 / -1;
+	order: 3;
+}
+
+.neonlib-publish-panel {
+	grid-column: 1 / -1;
+}
+
+.neonlib-subscription-form-panel {
+	grid-column: 1 / -1;
+}
+
+.neonlib-list-heading,
+.neonlib-row-actions,
+.neonlib-form-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+
+.neonlib-list-heading {
+	margin-bottom: 1.5rem;
+}
+
+.neonlib-list-heading h3,
+.neonlib-subscription-form-panel h3 {
+	margin: 0;
+}
+
+.neonlib-table-wrap {
+	overflow-x: auto;
+	border: 1px solid var(--neonlib-border);
+	border-radius: 12px;
+}
+
+.neonlib-subscriptions-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.9rem;
+}
+
+.neonlib-subscriptions-table th,
+.neonlib-subscriptions-table td {
+	padding: 0.9rem 1rem;
+	border-bottom: 1px solid var(--neonlib-border);
+	text-align: left;
+	vertical-align: middle;
+}
+
+.neonlib-subscriptions-table th {
+	color: var(--neonlib-muted);
+	font-size: 0.75rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.neonlib-subscriptions-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.neonlib-status {
+	display: inline-block;
+	padding: 0.25rem 0.55rem;
+	border-radius: 999px;
+	background: rgba(114, 241, 255, 0.1);
+	color: var(--neonlib-accent);
+}
+
+.neonlib-row-actions {
+	justify-content: flex-start;
+	white-space: nowrap;
+}
+
+.neonlib-row-actions a,
+.neonlib-link-danger {
+	padding: 0;
+	border: 0;
+	background: transparent !important;
+	color: var(--neonlib-accent) !important;
+	font: inherit;
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.neonlib-row-actions form {
+	display: inline;
+	margin: 0;
+}
+
+.neonlib-row-actions .neonlib-link-danger {
+	color: #e6a3a3 !important;
+}
+
+.neonlib-subscription-form-panel > form {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+	margin-top: 1.5rem;
+}
+
+.neonlib-form-wide,
+.neonlib-form-actions {
+	grid-column: 1 / -1;
+}
+
+.neonlib-form-actions {
+	justify-content: flex-end;
+}
+
+.neonlib-manage-documents {
+	margin-top: 0.5rem;
+	text-align: center;
+}
+
+.neonlib-back-link {
+	display: inline-block;
+	margin-bottom: 1.25rem;
+	color: var(--neonlib-accent);
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.neonlib-publish-heading,
+.neonlib-publish-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.neonlib-publish-heading {
+	margin-bottom: 1.5rem;
+}
+
+.neonlib-publish-heading h3,
+.neonlib-document-toolbar h4 {
+	margin: 0;
+}
+
+.neonlib-publish-heading > span {
+	color: var(--neonlib-muted);
+}
+
+.neonlib-publish-actions {
+	margin-top: 0.5rem;
+}
+
+.neonlib-dashboard-grid > .neonlib-notice {
+	grid-column: 1 / -1;
 }
 
 .neonlib-panel label,
@@ -92,6 +256,36 @@
 	margin: 0;
 }
 
+.neonlib-dashboard-tabs {
+	display: flex;
+	gap: 0.35rem;
+	margin-bottom: 1.5rem;
+	padding: 0.35rem;
+	border: 1px solid rgba(114, 241, 255, 0.16);
+	border-radius: 14px;
+	background: #0d111a;
+}
+
+.neonlib-dashboard-tabs a {
+	flex: 1;
+	padding: 0.8rem 1rem;
+	border-radius: 10px;
+	color: var(--neonlib-muted);
+	font-weight: 700;
+	text-align: center;
+	text-decoration: none;
+}
+
+.neonlib-dashboard-tabs a:hover,
+.neonlib-dashboard-tabs a:focus-visible {
+	color: #fff;
+}
+
+.neonlib-dashboard-tabs a.is-active {
+	background: var(--neonlib-accent);
+	color: #061014;
+}
+
 .neonlib-panel dl {
 	display: grid;
 	grid-template-columns: max-content 1fr;
@@ -138,6 +332,83 @@
 	margin-top: 0.75rem;
 }
 
+.neonlib-document-toolbar,
+.neonlib-document-toolbar > div,
+.neonlib-document-controls {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+
+.neonlib-document-toolbar p,
+.neonlib-json-status {
+	margin: 0;
+	color: var(--neonlib-muted);
+}
+
+.neonlib-file-button {
+	display: inline-block;
+	width: auto;
+	padding: 0.75rem 1rem;
+	border-radius: 999px;
+	background: var(--neonlib-accent);
+	color: #061014;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.neonlib-file-button input {
+	display: none;
+}
+
+.neonlib-document-card {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+	gap: 0.9rem;
+	margin-top: 1rem;
+	padding: 1rem;
+	border: 1px solid var(--neonlib-border);
+	border-radius: 12px;
+}
+
+.neonlib-document-content,
+.neonlib-document-controls {
+	grid-column: 1 / -1;
+}
+
+.neonlib-document-controls {
+	justify-content: flex-end;
+}
+
+.neonlib-document-controls button {
+	padding: 0.5rem 0.8rem;
+}
+
+.neonlib-document-controls .neonlib-remove-document {
+	background: #b42318 !important;
+	color: #fff !important;
+}
+
+.neonlib-raw-json {
+	padding: 0.8rem;
+	border: 1px solid var(--neonlib-border);
+	border-radius: 10px;
+}
+
+.neonlib-raw-json summary {
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.neonlib-raw-json label {
+	margin-top: 0.8rem;
+}
+
+.neonlib-json-status.is-error {
+	color: #e6a3a3;
+}
+
 .neonlib-notice {
 	margin: 1rem 0;
 	padding: 0.85rem 1rem;
@@ -165,5 +436,42 @@
 	.neonlib-dashboard-header {
 		align-items: flex-start;
 		flex-direction: column;
+	}
+
+	.neonlib-profile-panel {
+		grid-column: auto;
+	}
+
+	.neonlib-document-toolbar {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.neonlib-publish-heading,
+	.neonlib-publish-actions {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.neonlib-document-toolbar > div {
+		flex-wrap: wrap;
+	}
+
+	.neonlib-document-card {
+		grid-template-columns: 1fr;
+	}
+
+	.neonlib-subscription-form-panel > form {
+		grid-template-columns: 1fr;
+	}
+
+	.neonlib-form-wide,
+	.neonlib-form-actions {
+		grid-column: auto;
+	}
+
+	.neonlib-document-content,
+	.neonlib-document-controls {
+		grid-column: auto;
 	}
 }

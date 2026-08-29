@@ -15,10 +15,18 @@
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation"><span class="screen-reader-text">Toggle navigation</span>☰</button>
     <nav class="site-nav" id="site-navigation" aria-label="Primary navigation">
       <a href="<?php echo esc_url( home_url( '/#work' ) ); ?>">What we do</a>
-      <a href="<?php echo esc_url( home_url( '/services/' ) ); ?>">Services</a>
-      <a href="<?php echo esc_url( home_url( '/insights/' ) ); ?>">Insights</a>
       <a href="<?php echo esc_url( home_url( '/about/' ) ); ?>">About</a>
-      <a class="nav-cta" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Start a project</a>
+      <div class="nav-dropdown">
+        <div class="nav-dropdown-label"><a href="<?php echo esc_url( home_url( '/services/' ) ); ?>">Services</a><button class="nav-dropdown-toggle" type="button" aria-expanded="false" aria-controls="services-menu"><span class="screen-reader-text">Toggle services menu</span></button></div>
+        <div class="nav-dropdown-menu" id="services-menu">
+          <a href="<?php echo esc_url( home_url( '/services/php-nodejs/' ) ); ?>"><span>01</span>PHP &amp; Node.js</a>
+          <a href="<?php echo esc_url( home_url( '/services/firebase/' ) ); ?>"><span>02</span>Firebase</a>
+          <a href="<?php echo esc_url( home_url( '/services/applied-ai/' ) ); ?>"><span>03</span>Applied AI</a>
+          <a href="<?php echo esc_url( home_url( '/services/cloud-infrastructure/' ) ); ?>"><span>04</span>Cloud Infrastructure</a>
+        </div>
+      </div>
+      <a class="nav-product" href="<?php echo esc_url( home_url( '/neonlib/' ) ); ?>"><small>Product</small>NeonLib</a>
+      <a class="nav-cta" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact</a>
     </nav>
   </div>
 </header>

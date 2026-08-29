@@ -41,6 +41,16 @@ final class NeonLib_Api_Client {
 		return is_wp_error( $result ) ? $result : (array) ( $result['data'] ?? array() );
 	}
 
+	public function publisher( int $user_id ): array|WP_Error {
+		$result = $this->request( 'GET', '/api/v1/account/publisher', null, $user_id );
+		return is_wp_error( $result ) ? $result : (array) ( $result['data'] ?? array() );
+	}
+
+	public function update_publisher( int $user_id, string $display_name ): array|WP_Error {
+		$result = $this->request( 'PUT', '/api/v1/account/publisher', array( 'display_name' => $display_name ), $user_id );
+		return is_wp_error( $result ) ? $result : (array) ( $result['data'] ?? array() );
+	}
+
 	public function create_subscription( int $user_id, array $subscription ): array|WP_Error {
 		return $this->request( 'POST', '/api/v1/account/subscriptions', $subscription, $user_id );
 	}
@@ -61,6 +71,16 @@ final class NeonLib_Api_Client {
 			array( 'documents' => $documents ),
 			$user_id
 		);
+	}
+
+	public function versions( int $user_id, string $package_id ): array|WP_Error {
+		$result = $this->request( 'GET', '/api/v1/account/subscriptions/' . rawurlencode( $package_id ) . '/versions', null, $user_id );
+		return is_wp_error( $result ) ? $result : (array) ( $result['data'] ?? array() );
+	}
+
+	public function version( int $user_id, string $package_id, int $version ): array|WP_Error {
+		$result = $this->request( 'GET', '/api/v1/account/subscriptions/' . rawurlencode( $package_id ) . '/versions/' . $version, null, $user_id );
+		return is_wp_error( $result ) ? $result : (array) ( $result['data'] ?? array() );
 	}
 
 	private function request( string $method, string $path, ?array $payload = null, ?int $subject = null ): array|WP_Error {

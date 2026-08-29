@@ -12,4 +12,27 @@ document.addEventListener('DOMContentLoaded', () => {
       toggle.setAttribute('aria-expanded', 'false');
     }
   });
+
+  const dropdown = nav.querySelector('.nav-dropdown');
+  const dropdownToggle = nav.querySelector('.nav-dropdown-toggle');
+  if (dropdown && dropdownToggle) {
+    dropdownToggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const open = dropdown.classList.toggle('is-open');
+      dropdownToggle.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', (event) => {
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove('is-open');
+        dropdownToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        dropdown.classList.remove('is-open');
+        dropdownToggle.setAttribute('aria-expanded', 'false');
+        dropdownToggle.focus();
+      }
+    });
+  }
 });
