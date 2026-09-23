@@ -355,11 +355,11 @@ final class NeonLib_Users {
 						<label><?php esc_html_e( 'Language', 'neonlib-users' ); ?><input name="language" value="<?php echo esc_attr( (string) $new_subscription_values['language'] ); ?>" maxlength="20" required></label>
 						<label><?php esc_html_e( 'Visibility', 'neonlib-users' ); ?><select name="visibility"><option value="private" <?php selected( 'private', $new_subscription_values['visibility'] ); ?>>private</option><option value="public" <?php selected( 'public', $new_subscription_values['visibility'] ); ?>>public</option></select></label>
 						<div class="neonlib-form-wide neonlib-create-documents">
-							<div class="neonlib-document-toolbar"><div><h4><?php esc_html_e( 'Documents', 'neonlib-users' ); ?></h4><p><?php esc_html_e( 'Add text manually or import TXT, Markdown, HTML and CSV files. Arrange the order before publishing.', 'neonlib-users' ); ?></p></div><div><label class="neonlib-file-button"><?php esc_html_e( 'Import files', 'neonlib-users' ); ?><input class="neonlib-document-files" type="file" multiple accept=".txt,.md,.markdown,.html,.htm,.csv,text/plain,text/markdown,text/html,text/csv"></label><button class="neonlib-add-document" type="button"><?php esc_html_e( 'Add document', 'neonlib-users' ); ?></button></div></div>
+							<div class="neonlib-document-toolbar"><div><h4><?php esc_html_e( 'Documents', 'neonlib-users' ); ?></h4><p><?php esc_html_e( 'Add text manually or import TXT, Markdown, HTML and CSV files. Arrange the order before submitting for administrator review.', 'neonlib-users' ); ?></p></div><div><label class="neonlib-file-button"><?php esc_html_e( 'Import files', 'neonlib-users' ); ?><input class="neonlib-document-files" type="file" multiple accept=".txt,.md,.markdown,.html,.htm,.csv,text/plain,text/markdown,text/html,text/csv"></label><button class="neonlib-add-document" type="button"><?php esc_html_e( 'Add document', 'neonlib-users' ); ?></button></div></div>
 							<div class="neonlib-document-builder"></div>
 							<details class="neonlib-raw-json"><summary><?php esc_html_e( 'Advanced: raw JSON', 'neonlib-users' ); ?></summary><label><?php esc_html_e( 'Documents (JSON)', 'neonlib-users' ); ?><textarea class="neonlib-documents-json" name="documents_json" rows="8" required><?php echo esc_textarea( (string) $new_subscription_values['documents_json'] ); ?></textarea></label></details>
 						</div>
-						<div class="neonlib-form-actions"><p class="neonlib-json-status" aria-live="polite"></p><button type="submit"><?php esc_html_e( 'Create and publish', 'neonlib-users' ); ?></button></div>
+						<div class="neonlib-form-actions"><p class="neonlib-json-status" aria-live="polite"></p><button type="submit"><?php esc_html_e( 'Create and submit for review', 'neonlib-users' ); ?></button></div>
 					</form>
 					<?php endif; ?>
 				</section>
@@ -385,7 +385,7 @@ final class NeonLib_Users {
 				<section class="neonlib-panel neonlib-publish-panel">
 					<a class="neonlib-back-link" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'subscriptions', $this->account_url() ) ); ?>">&larr; <?php esc_html_e( 'Back to subscriptions', 'neonlib-users' ); ?></a>
 					<div class="neonlib-publish-heading">
-						<div><p class="neonlib-eyebrow"><?php echo esc_html( (string) $selected_subscription['package_id'] ); ?></p><h3><?php esc_html_e( 'Documents and publishing', 'neonlib-users' ); ?></h3></div>
+						<div><p class="neonlib-eyebrow"><?php echo esc_html( (string) $selected_subscription['package_id'] ); ?></p><h3><?php esc_html_e( 'Documents and review', 'neonlib-users' ); ?></h3></div>
 						<span><?php echo esc_html( (string) ( $selected_subscription['title'] ?? '' ) ); ?><?php if ( null !== $latest_version ) echo ' · ' . esc_html( sprintf( __( 'Based on version %d', 'neonlib-users' ), $latest_version ) ); ?></span>
 					</div>
 					<form class="neonlib-document-form" method="post" action="<?php echo esc_url( $this->account_url() ); ?>">
@@ -393,7 +393,7 @@ final class NeonLib_Users {
 						<input type="hidden" name="neonlib_action" value="publish_subscription">
 						<input type="hidden" name="package_id" value="<?php echo esc_attr( (string) $selected_subscription['package_id'] ); ?>">
 						<div class="neonlib-document-toolbar">
-							<div><h4><?php esc_html_e( 'Documents', 'neonlib-users' ); ?></h4><p><?php esc_html_e( 'Add text manually or import TXT, Markdown, HTML and CSV files. Arrange the order before publishing.', 'neonlib-users' ); ?></p></div>
+							<div><h4><?php esc_html_e( 'Documents', 'neonlib-users' ); ?></h4><p><?php esc_html_e( 'Add text manually or import TXT, Markdown, HTML and CSV files. Arrange the order before submitting for administrator review.', 'neonlib-users' ); ?></p></div>
 							<div>
 								<label class="neonlib-file-button"><?php esc_html_e( 'Import files', 'neonlib-users' ); ?><input class="neonlib-document-files" type="file" multiple accept=".txt,.md,.markdown,.html,.htm,.csv,text/plain,text/markdown,text/html,text/csv"></label>
 								<button class="neonlib-add-document" type="button"><?php esc_html_e( 'Add document', 'neonlib-users' ); ?></button>
@@ -404,7 +404,7 @@ final class NeonLib_Users {
 							<summary><?php esc_html_e( 'Advanced: raw JSON', 'neonlib-users' ); ?></summary>
 							<label><?php esc_html_e( 'Documents (JSON)', 'neonlib-users' ); ?><textarea class="neonlib-documents-json" name="documents_json" rows="8" required><?php echo esc_textarea( $documents_json ); ?></textarea></label>
 						</details>
-						<div class="neonlib-publish-actions"><p class="neonlib-json-status" aria-live="polite"></p><button type="submit"><?php esc_html_e( 'Publish new version', 'neonlib-users' ); ?></button></div>
+						<div class="neonlib-publish-actions"><p class="neonlib-json-status" aria-live="polite"></p><button type="submit"><?php esc_html_e( 'Submit for review', 'neonlib-users' ); ?></button></div>
 					</form>
 				</section>
 				<?php endif; ?>
@@ -683,10 +683,10 @@ final class NeonLib_Users {
 		$status = isset( $_GET['neonlib_subscription'] ) ? sanitize_key( wp_unslash( $_GET['neonlib_subscription'] ) ) : '';
 		$success = array(
 			'created' => __( 'Subscription created.', 'neonlib-users' ),
-			'created_and_published' => __( 'Subscription created and its first version published.', 'neonlib-users' ),
-			'updated' => __( 'Subscription updated.', 'neonlib-users' ),
+			'created_and_published' => __( 'Subscription created. Its first version is awaiting administrator review.', 'neonlib-users' ),
+			'updated' => __( 'Subscription updated. Administrator approval is required before distribution; archived subscriptions stay archived.', 'neonlib-users' ),
 			'deleted' => __( 'The subscription and all of its versions were deleted.', 'neonlib-users' ),
-			'published' => __( 'A new version has been published.', 'neonlib-users' ),
+			'published' => __( 'A new version was submitted for administrator review. It is not published yet.', 'neonlib-users' ),
 		);
 		$errors = array(
 			'forbidden' => __( 'You do not have permission to perform this action.', 'neonlib-users' ),
@@ -696,7 +696,7 @@ final class NeonLib_Users {
 			'invalid_json' => __( 'Documents must be a valid JSON list.', 'neonlib-users' ),
 			'invalid_documents' => __( 'Add at least one valid document before creating the subscription.', 'neonlib-users' ),
 			'duplicate_package_id' => __( 'A subscription with this Package ID already exists. Choose a different Package ID.', 'neonlib-users' ),
-			'created_publish_failed' => __( 'The subscription was created, but its first version could not be published. Review the documents and try publishing again.', 'neonlib-users' ),
+			'created_publish_failed' => __( 'The subscription was created, but its first version could not be submitted. Review the documents and try again.', 'neonlib-users' ),
 			'publisher_required' => __( 'Set your public publisher name before creating a subscription.', 'neonlib-users' ),
 			'api_error' => __( 'The NeonLib service could not complete the action. Please try again.', 'neonlib-users' ),
 		);
@@ -709,7 +709,7 @@ final class NeonLib_Users {
 	private function profile_notice(): string {
 		$status = isset( $_GET['neonlib_profile'] ) ? sanitize_key( wp_unslash( $_GET['neonlib_profile'] ) ) : '';
 		if ( 'updated' === $status ) {
-			return '<div class="neonlib-notice neonlib-notice--success">' . esc_html__( 'Publisher name saved.', 'neonlib-users' ) . '</div>';
+			return '<div class="neonlib-notice neonlib-notice--success">' . esc_html__( 'Publisher name saved. A name change returns published subscriptions to administrator review.', 'neonlib-users' ) . '</div>';
 		}
 		$errors = array(
 			'forbidden'        => __( 'You do not have permission to update this profile.', 'neonlib-users' ),

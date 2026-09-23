@@ -39,6 +39,13 @@ final class NeonLib_Admin_Api_Client {
 		return $this->request( 'PATCH', '/api/v1/admin/subscriptions/' . rawurlencode( $package_id ), $changes );
 	}
 
+    public function reports( array $filters ): array|WP_Error {
+        return $this->request( 'GET', '/api/v1/admin/reports', null, $filters );
+    }
+    public function update_report( string $id, array $changes ): array|WP_Error {
+        return $this->request( 'PATCH', '/api/v1/admin/reports/' . rawurlencode( $id ), $changes );
+    }
+
 	public function health(): array|WP_Error {
 		if ( '' === $this->base_url ) {
 			return new WP_Error( 'neonlib_admin_not_configured', __( 'NeonLib API URL nije konfiguriran.', 'neonlib-admin' ) );
