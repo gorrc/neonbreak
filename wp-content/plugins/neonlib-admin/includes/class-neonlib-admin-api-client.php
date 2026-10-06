@@ -46,6 +46,10 @@ final class NeonLib_Admin_Api_Client {
         return $this->request( 'PATCH', '/api/v1/admin/reports/' . rawurlencode( $id ), $changes );
     }
 
+    public function delete_subscriptions( array $ids ): array|WP_Error {
+        return $this->request( 'POST', '/api/v1/admin/subscriptions/bulk-delete', array( 'package_ids'=>$ids, 'confirm'=>true ) );
+    }
+
 	public function health(): array|WP_Error {
 		if ( '' === $this->base_url ) {
 			return new WP_Error( 'neonlib_admin_not_configured', __( 'NeonLib API URL nije konfiguriran.', 'neonlib-admin' ) );

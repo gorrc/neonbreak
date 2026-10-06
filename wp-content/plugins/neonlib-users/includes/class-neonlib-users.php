@@ -111,7 +111,7 @@ final class NeonLib_Users {
 			'neonlib-users-document-builder',
 			NEONLIB_USERS_URL . 'assets/js/document-builder.js',
 			array(),
-			NEONLIB_USERS_VERSION,
+			NEONLIB_USERS_VERSION . '-hr1',
 			true
 		);
 	}
@@ -841,6 +841,18 @@ final class NeonLib_Users {
 	}
 
 	public function login_redirect( string $redirect_to, string $requested_redirect_to, $user ): string {
+		// Respect an explicit same-site Workspace login destination.
+		$site = wp_parse_url( get_option( 'home' ) );
+		$target = wp_parse_url( $requested_redirect_to );
+		$base = rtrim( $site['path'] ?? '', '/' );
+		if ( $user instanceof WP_User && is_array( $target )
+			&& ( $target['host'] ?? '' ) === ( $site['host'] ?? '' )
+			&& ( $target['scheme'] ?? '' ) === ( $site['scheme'] ?? '' )
+			&& ( $target['port'] ?? null ) === ( $site['port'] ?? null )
+			&& ! isset( $target['user'] ) && ! isset( $target['pass'] )
+			&& preg_match( '~^' . preg_quote( $base, '~' ) . '/(?:hr/)?workspace/?$~D', $target['path'] ?? '' ) ) {
+			return $requested_redirect_to;
+		}
 		if ( $user instanceof WP_User && $user->has_cap( self::CAP_ACCESS ) && ! $user->has_cap( 'manage_options' ) ) {
 			return $this->account_url();
 		}

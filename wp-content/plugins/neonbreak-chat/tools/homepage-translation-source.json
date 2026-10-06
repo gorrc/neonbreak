@@ -1,0 +1,1094 @@
+[
+    {
+        "id": "1",
+        "original": "neon",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "2",
+        "original": "break",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "3",
+        "original": "Toggle navigation",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "4",
+        "original": "☰",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "5",
+        "original": "What we do",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "6",
+        "original": "About",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "7",
+        "original": "Services",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "8",
+        "original": "Toggle services menu",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "9",
+        "original": "PHP &amp; Node.js",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "10",
+        "original": "Firebase",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "11",
+        "original": "Applied AI",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "12",
+        "original": "Cloud Infrastructure",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "13",
+        "original": "Product",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "14",
+        "original": "NeonLib",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "15",
+        "original": "Natdian",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "16",
+        "original": "Solution",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "17",
+        "original": "AI Chat",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "18",
+        "original": "Contact",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "19",
+        "original": "Independent AI & web engineering studio",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "20",
+        "original": "We build web applications and",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "21",
+        "original": "practical AI systems.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "22",
+        "original": "We use AI twice: as an accelerator for better software development, and as a practical technology inside the products we build. The result is leaner, faster and distinctly yours.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "23",
+        "original": "Explore our approach",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "24",
+        "original": "Tell us what you’re building →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "25",
+        "original": "AI-native development",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "26",
+        "original": "Custom web applications",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "27",
+        "original": "Based in Croatia · Working globally",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "28",
+        "original": "Web applications, AI and cloud infrastructure.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "29",
+        "original": "01 \/ WEB APPLICATIONS",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "30",
+        "original": "PHP, Node.js and Firebase",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "31",
+        "original": "Custom applications in PHP or Node.js. For suitable products, Firebase provides authentication, data, storage and hosting in one Google Cloud-connected stack.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "32",
+        "original": "PHP &amp; Node.js →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "33",
+        "original": "Firebase →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "34",
+        "original": "02 \/ AI SYSTEMS",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "35",
+        "original": "Managed or custom AI",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "36",
+        "original": "Google and AWS services for managed implementations, or custom model pipelines through providers such as Groq and Fireworks when latency, model choice or inference cost needs tighter control.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "37",
+        "original": "Applied AI →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "38",
+        "original": "03 \/ CLOUD",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "39",
+        "original": "AWS and Google Cloud",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "40",
+        "original": "Applications deployed on the cloud platform that fits their architecture, including compute, storage, databases, networking, monitoring and production releases.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "41",
+        "original": "Cloud Infrastructure →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "42",
+        "original": "View all services →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "43",
+        "original": "How we build",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "44",
+        "original": "AI-assisted development, organised as engineering work.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "45",
+        "original": "01 \/ PROTOTYPE",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "46",
+        "original": "Test the product shape",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "47",
+        "original": "We use AI to build an early working prototype and expose unclear requirements before they become expensive implementation decisions.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "48",
+        "original": "02 \/ MODULARISE",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "49",
+        "original": "Split the system into modules",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "50",
+        "original": "The application is divided into bounded parts with explicit interfaces, acceptance criteria and dependencies.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "51",
+        "original": "03 \/ BUILD",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "52",
+        "original": "Orchestrate focused agents",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "53",
+        "original": "Claude, Antigravity, Codex and Copilot are used for constrained development tasks. Work is delivered in small, reviewable iterations toward the MVP.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "54",
+        "original": "04 \/ VERIFY",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "55",
+        "original": "Cross-check important decisions",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "56",
+        "original": "Critical architecture, security and data decisions are challenged across multiple tools, tested against the code and approved by a developer.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "57",
+        "original": "Why custom",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "58",
+        "original": "Own the solution, not just a subscription.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "59",
+        "original": "A custom application can follow an existing workflow, connect the systems already in use and avoid paying for unrelated features. It is not always the better option; the decision depends on scope, maintenance and long-term cost.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "60",
+        "original": "Example 01 · Model infrastructure",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "61",
+        "original": "Pay for inference only when it is used.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "62",
+        "original": "An application can call an on-demand model when a request arrives instead of paying for dedicated model capacity that remains reserved during periods with little or no traffic.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "63",
+        "original": "No continuously running GPU or model server for an early product",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "64",
+        "original": "Usage-based cost while traffic is low or irregular",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "65",
+        "original": "Move to dedicated capacity when sustained volume makes it more economical",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "66",
+        "original": "Dedicated inference can provide more predictable latency, capacity and isolation. The cost comparison depends on traffic volume and the selected model.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "67",
+        "original": "Example 02 · Application knowledge",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "68",
+        "original": "Use RAG when the facts change.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "69",
+        "original": "Retrieval-augmented generation finds relevant content at request time and supplies it to the model. Documents can be updated without retraining the model, while the application controls access and can show the sources used for an answer.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "70",
+        "original": "Update the knowledge base independently from the model",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "71",
+        "original": "Filter retrieval by user, organisation or document permissions",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "72",
+        "original": "Use fine-tuning for behaviour or format—not as the default way to store changing facts",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "73",
+        "original": "RAG still requires good document processing, retrieval tests and rules for answers that are not supported by a source.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "74",
+        "original": "Technology decisions, explained",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "75",
+        "original": "What we use, where it fits and where it doesn’t.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "76",
+        "original": "01 · Application runtime",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "77",
+        "original": "PHP and Node.js",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "78",
+        "original": "PHP fits",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "79",
+        "original": "Content, commerce and transactions",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "80",
+        "original": "PHP is a practical choice for WordPress, Magento, customer portals and business applications built around forms, records and relational data.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "81",
+        "original": "WordPress and Magento development",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "82",
+        "original": "CakePHP as our preferred rapid application development framework",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "83",
+        "original": "Laravel when its ecosystem or an existing team makes it the practical choice",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "84",
+        "original": "Node.js fits",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "85",
+        "original": "Real-time and event-driven applications",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "86",
+        "original": "Node.js is useful when the application handles live updates, queues, streaming APIs or benefits from sharing JavaScript types and packages between frontend and backend.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "87",
+        "original": "Non-blocking I\/O for concurrent connections",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "88",
+        "original": "Strong JavaScript and TypeScript ecosystem",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "89",
+        "original": "Natural fit for API and integration services",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "90",
+        "original": "They are not mutually exclusive:",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "91",
+        "original": "a project can use PHP for its core business application and Node.js for a clearly separated real-time or background-processing service.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "92",
+        "original": "How we work with PHP &amp; Node.js →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "93",
+        "original": "F",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "94",
+        "original": "02 · Managed application platform",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "95",
+        "original": "A good fit",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "96",
+        "original": "Products driven by users and real-time activity",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "97",
+        "original": "Marketplaces, social feeds, messaging, booking flows and startup MVPs can benefit from managed authentication, document data, storage and real-time updates.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "98",
+        "original": "Usage-based infrastructure with no-cost allowances",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "99",
+        "original": "No server fleet to manage during early validation",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "100",
+        "original": "A clear path from prototype to high traffic",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "101",
+        "original": "Not our default",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "102",
+        "original": "Systems built around complex relational data",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "103",
+        "original": "Accounting software, inventory-heavy commerce and reporting systems often need transactions, joins and relational constraints at the centre of the design.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "104",
+        "original": "Read patterns can make document billing unpredictable",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "105",
+        "original": "Denormalised models add application complexity",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "106",
+        "original": "PostgreSQL or a hybrid architecture may be clearer",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "107",
+        "original": "The important distinction:",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "108",
+        "original": "Cloud Firestore is a NoSQL document database. Firebase also offers a managed PostgreSQL path, so we choose the data layer—not just the brand name.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "109",
+        "original": "How we work with Firebase →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "110",
+        "original": "AI",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "111",
+        "original": "03 · AI infrastructure",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "112",
+        "original": "Managed AI or specialised inference",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "113",
+        "original": "Google \/ AWS",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "114",
+        "original": "Integrated enterprise AI platforms",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "115",
+        "original": "Google Cloud and AWS combine models with identity, storage, monitoring, governance and other cloud services. That integration is useful when those controls are part of the requirement.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "116",
+        "original": "Centralised access and cloud governance",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "117",
+        "original": "Integration with existing cloud data",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "118",
+        "original": "Broad managed-service ecosystem",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "119",
+        "original": "Groq \/ Fireworks",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "120",
+        "original": "Focused model inference APIs",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "121",
+        "original": "Specialised providers can offer a smaller integration surface and additional choices for open models, latency and inference pricing when a complete enterprise platform is unnecessary.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "122",
+        "original": "Direct, API-focused implementation",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "123",
+        "original": "Choice of supported open models",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "124",
+        "original": "Costs measured against the actual workload",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "125",
+        "original": "The model is only one component:",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "126",
+        "original": "retrieval, permissions, evaluation, logging and fallback behaviour still need to be designed in the application.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "127",
+        "original": "How we implement AI →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "128",
+        "original": "☁",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "129",
+        "original": "04 · Hosting infrastructure",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "130",
+        "original": "Cloud fits",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "131",
+        "original": "Applications with changing requirements",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "132",
+        "original": "Cloud platforms provide managed databases, object storage, queues, private networks, monitoring and capacity that can be changed without replacing the entire hosting environment.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "133",
+        "original": "Scale individual components independently",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "134",
+        "original": "Managed backups, regions and access controls",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "135",
+        "original": "Infrastructure can be described and reproduced",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "136",
+        "original": "Classic hosting fits",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "137",
+        "original": "Small and predictable workloads",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "138",
+        "original": "A conventional server or hosting plan can be simpler and cheaper for a stable website or application that does not need several managed services or rapid changes in capacity.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "139",
+        "original": "Predictable monthly cost",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "140",
+        "original": "Less infrastructure to configure",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "141",
+        "original": "A better fit when scaling needs are modest",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "142",
+        "original": "Cloud is not automatically cheaper:",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "143",
+        "original": "its advantage is service choice, automation and scaling. Costs still require monitoring and architecture limits.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "144",
+        "original": "How we use cloud infrastructure →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "145",
+        "original": "Start a conversation",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "146",
+        "original": "Have a process that should work better?",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "147",
+        "original": "Let’s map the opportunity",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "148",
+        "original": "Your first step into AI",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "149",
+        "original": "Your brand. Your knowledge. Your AI chat.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "150",
+        "original": "Configure your assistant, connect your Fireworks account and embed it on your website. Start with chat and grow into business integrations.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "151",
+        "original": "Explore your AI chat →",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "152",
+        "original": "© 2026 Neon Break. AI-native software, built with intent.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "153",
+        "original": "Business information",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "154",
+        "original": "Privacy",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "155",
+        "original": "Cookies",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "156",
+        "original": "Terms",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "157",
+        "original": "✦",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "158",
+        "original": "Let&#039;s talk",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "159",
+        "original": "A conversation starts here",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "160",
+        "original": "Neon Break assistant",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "161",
+        "original": "New chat",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "162",
+        "original": "×",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "163",
+        "original": "Hi! Tell me what you&#039;re building, or ask about our services. We can explore the next step together.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "164",
+        "original": "What can you build?",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "165",
+        "original": "How can AI help my business?",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "166",
+        "original": "How do we get started?",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "167",
+        "original": "Prefer a person?",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "168",
+        "original": "Talk to our team ↗",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "169",
+        "original": "Your message",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "170",
+        "original": "↗",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "171",
+        "original": "AI answers may be inaccurate. Messages are processed by Fireworks AI. Avoid sharing sensitive information.",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "172",
+        "original": "What do you have in mind?",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "173",
+        "original": "Start a new conversation",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "174",
+        "original": "Neon Break home",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "175",
+        "original": "Primary navigation",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "176",
+        "original": "Capabilities",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "177",
+        "original": "Legal",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "178",
+        "original": "Close chat",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "179",
+        "original": "Suggested questions",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "180",
+        "original": "Send message",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "181",
+        "original": "Birač jezika web stranice",
+        "translated": "",
+        "status": "0"
+    },
+    {
+        "id": "182",
+        "original": "Dostupni jezici",
+        "translated": "",
+        "status": "0"
+    }
+]

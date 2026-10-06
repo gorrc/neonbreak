@@ -142,4 +142,5 @@
     <div class="cta-actions"><a class="button button-primary" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Let’s map the opportunity</a></div>
   </div>
 </section>
+<section class="section"><div class="nb-wrap cta-panel"><div><p class="eyebrow">Your first step into AI</p><h2>Your brand. Your knowledge. Your AI chat.</h2><p>Configure your assistant, connect your Fireworks account and embed it on your website. Start with chat and grow into business integrations.</p></div><div class="cta-actions"><a class="button button-primary" href="<?php echo esc_url( home_url( '/ai-chat/' ) ); ?>">Explore your AI chat →</a></div></div></section>
 <?php get_footer(); ?>

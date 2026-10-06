@@ -1,0 +1,23 @@
+{
+  "Two established server-side platforms selected according to the application workload, existing systems and maintenance requirements.": "Dvije provjerene platforme za poslužiteljsku stranu aplikacije, odabrane prema opterećenju, postojećim sustavima i zahtjevima održavanja.",
+  "We use PHP for WordPress, Magento, content-heavy products, administration and transactional workflows. CakePHP is our preferred framework for custom PHP applications when rapid application development fits the project. Laravel is supported when its ecosystem, an existing codebase or the client team makes it the more practical choice. We use React for application interfaces, Next.js when server rendering and an integrated full-stack structure are useful, and Node.js for APIs, integrations, background processing and real-time features.": "PHP koristimo za WordPress, Magento, proizvode s mnogo sadržaja, administraciju i transakcijske procese. CakePHP je naš preferirani okvir za PHP aplikacije po mjeri kada projektu odgovara brzi razvoj aplikacija. Laravel koristimo kada ga njegov ekosustav, postojeći kod ili tim klijenta čine praktičnijim izborom. React koristimo za korisnička sučelja aplikacija, Next.js kada su korisni prikaz na poslužitelju i objedinjeni razvoj sučelja i poslužiteljskog dijela, a Node.js za API-je, integracije, obradu u pozadini i funkcionalnosti u stvarnom vremenu.",
+  "Use case": "Primjena",
+  "Where each runtime fits": "Kada odabrati pojedinu platformu",
+  "WordPress for content-driven websites and platforms": "WordPress za stranice i platforme usmjerene na sadržaj",
+  "Magento for established e-commerce requirements": "Magento za jasno definirane zahtjeve internetske trgovine",
+  "CakePHP for rapid development of custom business applications": "CakePHP za brzi razvoj poslovnih aplikacija po mjeri",
+  "Laravel when package availability or team familiarity matters": "Laravel kada su važni dostupni paketi ili iskustvo tima s tim okvirom",
+  "React for application interfaces": "React za korisnička sučelja aplikacija",
+  "Next.js for full-stack and server-rendered web applications": "Next.js za cjelovite web aplikacije i prikaz na poslužitelju",
+  "Node.js and TypeScript for APIs, integrations, queues and real-time services": "Node.js i TypeScript za API-je, integracije, redove zadataka i servise u stvarnom vremenu",
+  "Trade-offs": "Što treba odvagnuti",
+  "What we decide before implementation": "Što odlučujemo prije implementacije",
+  "Whether one runtime is sufficient": "Je li dovoljna jedna platforma",
+  "Where a service boundary provides a real benefit": "Kada izdvajanje zasebnog servisa donosi stvarnu korist",
+  "Database and transaction requirements": "Zahtjevi za bazu podataka i transakcije",
+  "Hosting, monitoring and long-term maintenance": "Hosting, nadzor i dugoročno održavanje",
+  "Implementation note:": "Napomena o implementaciji:",
+  "CakePHP is our preferred starting point for custom PHP work because its conventions, code generation and built-in application structure reduce repetitive setup. Laravel is the alternative when its larger ecosystem, available packages or the project team provide a concrete advantage. PHP and Node.js can also be combined when each runtime has a clear responsibility.": "CakePHP je naše preferirano polazište za PHP rješenja po mjeri jer njegove konvencije, generiranje koda i ugrađena struktura aplikacije smanjuju ponavljajuće početne korake. Laravel je alternativa kada njegov veći ekosustav, dostupni paketi ili projektni tim donose konkretnu prednost. PHP i Node.js mogu se i kombinirati kada svaka platforma ima jasno definiranu odgovornost.",
+  "← All services": "← Sve usluge",
+  "Discuss a project": "Razgovarajmo o projektu"
+}

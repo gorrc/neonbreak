@@ -1,0 +1,15 @@
+{
+  "AWS or Google Cloud infrastructure assembled from the services the application actually needs.": "Infrastruktura na AWS-u ili Google Cloudu sastavljena od usluga koje aplikacija stvarno treba.",
+  "Cloud hosting allows compute, storage, databases and networking to scale independently. Conventional hosting can remain the simpler and cheaper choice for small, predictable workloads.": "Hosting u oblaku omogućuje neovisno skaliranje računalnih resursa, pohrane, baza podataka i mreže. Klasični hosting može ostati jednostavniji i jeftiniji izbor za mala, predvidljiva opterećenja.",
+  "Why use cloud infrastructure": "Zašto koristiti infrastrukturu u oblaku",
+  "Managed databases, queues and object storage": "Upravljane baze podataka, redovi zadataka i pohrana objekata",
+  "Independent scaling of application components": "Neovisno skaliranje komponenti aplikacije",
+  "Reproducible infrastructure and automated deployment": "Infrastruktura koja se može ponovno uspostaviti i automatizirano postavljanje aplikacija",
+  "Monitoring, access control, backups and regional options": "Nadzor, kontrola pristupa, sigurnosne kopije i odabir regije",
+  "When classic hosting may be better": "Kada klasični hosting može biti bolji izbor",
+  "Stable website or application traffic": "Stabilan promet stranice ili aplikacije",
+  "No requirement for several managed services": "Nema potrebe za više upravljanih usluga",
+  "Predictable monthly infrastructure budget": "Predvidljiv mjesečni trošak infrastrukture",
+  "A single server is sufficient for the workload": "Jedan poslužitelj dovoljan je za očekivano opterećenje",
+  "Cloud is not automatically cheaper. Its advantages are flexibility, managed services and controlled scaling.": "Oblak nije automatski jeftiniji. Njegove su prednosti fleksibilnost, upravljane usluge i kontrolirano skaliranje."
+}

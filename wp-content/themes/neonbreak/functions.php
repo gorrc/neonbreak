@@ -14,6 +14,14 @@ function neonbreak_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'neonbreak_assets' );
 
+function neonbreak_language_preference_assets() {
+    if ( ! class_exists( 'TRP_Translate_Press' ) || is_admin() || isset( $_GET['trp-edit-translation'] ) || is_preview() ) return;
+    wp_enqueue_script( 'neonbreak-language', get_template_directory_uri() . '/language-preference.js', array(), (string) filemtime( get_template_directory() . '/language-preference.js' ), false );
+    // Use the untranslated base URL, independent of the language being viewed.
+    wp_add_inline_script( 'neonbreak-language', 'window.NeonbreakLanguage = ' . wp_json_encode( array( 'base' => trailingslashit( get_option( 'home' ) ) ) ) . ';', 'before' );
+}
+add_action( 'wp_enqueue_scripts', 'neonbreak_language_preference_assets' );
+
 function neonbreak_meta() {
     if ( is_admin() ) return;
     if ( is_front_page() ) {

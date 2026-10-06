@@ -1,5 +1,7 @@
 (() => {
 	'use strict';
+	const hr = document.documentElement.lang.toLowerCase().startsWith('hr');
+	const text = (english, croatian) => hr ? croatian : english;
 
 	const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
 		'&': '&amp;',
@@ -41,20 +43,20 @@
 
 		const syncJson = () => {
 			textarea.value = JSON.stringify(documents, null, 2);
-			status.textContent = `${documents.length} document${documents.length === 1 ? '' : 's'} ready to publish.`;
+			status.textContent = hr ? `Broj dokumenata spremnih za objavu: ${documents.length}.` : `${documents.length} document${documents.length === 1 ? '' : 's'} ready to publish.`;
 			status.classList.remove('is-error');
 		};
 
 		const render = () => {
 			mount.innerHTML = documents.map((document, index) => `
 				<article class="neonlib-document-card" data-index="${index}">
-					<label>Document ID<input data-key="id" value="${escapeHtml(document.id)}" maxlength="190" required></label>
-					<label>Title<input data-key="title" value="${escapeHtml(document.title)}" maxlength="500" required></label>
-					<label class="neonlib-document-content">Content<textarea data-key="content" rows="8" required>${escapeHtml(document.content)}</textarea></label>
+					<label>${text('Document ID', 'Identifikator dokumenta')}<input data-key="id" value="${escapeHtml(document.id)}" maxlength="190" required></label>
+					<label>${text('Title', 'Naslov')}<input data-key="title" value="${escapeHtml(document.title)}" maxlength="500" required></label>
+					<label class="neonlib-document-content">${text('Content', 'Sadržaj')}<textarea data-key="content" rows="8" required>${escapeHtml(document.content)}</textarea></label>
 					<div class="neonlib-document-controls">
-						<button type="button" data-action="up" ${index === 0 ? 'disabled' : ''}>Up</button>
-						<button type="button" data-action="down" ${index === documents.length - 1 ? 'disabled' : ''}>Down</button>
-						<button class="neonlib-remove-document" type="button" data-action="remove">Remove</button>
+						<button type="button" data-action="up" ${index === 0 ? 'disabled' : ''}>${text('Up', 'Gore')}</button>
+						<button type="button" data-action="down" ${index === documents.length - 1 ? 'disabled' : ''}>${text('Down', 'Dolje')}</button>
+						<button class="neonlib-remove-document" type="button" data-action="remove">${text('Remove', 'Ukloni')}</button>
 					</div>
 				</article>
 			`).join('');
@@ -74,7 +76,7 @@
 				render();
 				syncJson();
 			} catch (error) {
-				status.textContent = 'Invalid JSON. Fix it before publishing.';
+				status.textContent = text('Invalid JSON. Fix it before publishing.', 'JSON nije valjan. Ispravite ga prije objave.');
 				status.classList.add('is-error');
 			}
 		};
@@ -132,7 +134,7 @@
 			syncJson();
 			if (documents.length === 0) {
 				event.preventDefault();
-				status.textContent = 'Add at least one document before publishing.';
+				status.textContent = text('Add at least one document before publishing.', 'Prije objave dodajte barem jedan dokument.');
 				status.classList.add('is-error');
 			}
 		});

@@ -13,6 +13,7 @@ final class NeonLib_Admin {
 
 	private function __construct() {
 		add_action( 'admin_post_neonlib_admin_report_update', array( $this, 'handle_report_update' ) );
+		add_action( 'admin_post_neonlib_admin_bulk_delete', array( $this, 'handle_bulk_delete' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'admin_post_neonlib_admin_approve', array( $this, 'handle_approve' ) );
@@ -83,12 +84,19 @@ final class NeonLib_Admin {
 		?>
 		<form class="neonlib-admin-filters" method="get"><input type="hidden" name="page" value="<?php echo esc_attr( self::PAGE ); ?>"><input type="hidden" name="tab" value="subscriptions"><input name="account_id" value="<?php echo esc_attr( $account_id ); ?>" placeholder="Account ID"><select name="status"><option value=""><?php esc_html_e( 'All statuses', 'neonlib-admin' ); ?></option><?php foreach ( array( 'draft', 'published', 'archived' ) as $value ) : ?><option value="<?php echo esc_attr( $value ); ?>" <?php selected( $status, $value ); ?>><?php echo esc_html( $value ); ?></option><?php endforeach; ?></select><button class="button"><?php esc_html_e( 'Filter', 'neonlib-admin' ); ?></button></form>
 		<?php if ( is_wp_error( $result ) ) { $this->render_api_error( $result ); return; } $rows = (array) ( $result['data'] ?? array() ); ?>
-		<table class="widefat striped neonlib-admin-table"><thead><tr><th>Package ID</th><th>Account ID</th><th><?php esc_html_e( 'Title', 'neonlib-admin' ); ?></th><th><?php esc_html_e( 'Moderation', 'neonlib-admin' ); ?></th></tr></thead><tbody>
-		<?php if ( ! $rows ) : ?><tr><td colspan="4"><?php esc_html_e( 'Nema rezultata.', 'neonlib-admin' ); ?></td></tr><?php endif; ?>
-		<?php foreach ( $rows as $row ) : ?><tr><td><code><?php echo esc_html( (string) $row['package_id'] ); ?></code></td><td><code><?php echo esc_html( (string) ( $row['account_id'] ?? 'legacy' ) ); ?></code></td><td><?php echo esc_html( (string) $row['title'] ); ?></td><td><p><strong><?php echo esc_html( (string) $row['status'] ); ?></strong>
+		<form id="neonlib-bulk-delete" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" onsubmit="return confirm('Permanently delete the selected collections, ALL their versions and documents? This cannot be undone.');">
+            <?php wp_nonce_field( 'neonlib_admin_bulk_delete' ); ?>
+            <input type="hidden" name="action" value="neonlib_admin_bulk_delete">
+            <p><label><input type="checkbox" name="confirm_delete" value="1" required> I confirm permanent deletion of the selected collections and their documents.</label></p>
+            <button class="button" type="submit">Delete selected permanently</button>
+            <p>Select all applies only to the rows shown below (up to 100), including the current filters. Accounts and publishers are kept.</p>
+        </form>
+        <table class="widefat striped neonlib-admin-table"><thead><tr><th><label><input type="checkbox" id="neonlib-select-all" onchange="document.querySelectorAll('.neonlib-delete-item').forEach(item => item.checked = this.checked)"> Select all shown</label></th><th>Package ID</th><th>Account ID</th><th><?php esc_html_e( 'Title', 'neonlib-admin' ); ?></th><th><?php esc_html_e( 'Moderation', 'neonlib-admin' ); ?></th></tr></thead><tbody>
+		<?php if ( ! $rows ) : ?><tr><td colspan="5"><?php esc_html_e( 'Nema rezultata.', 'neonlib-admin' ); ?></td></tr><?php endif; ?>
+		<?php foreach ( $rows as $row ) : ?><tr><td><input type="checkbox" class="neonlib-delete-item" form="neonlib-bulk-delete" name="package_ids[]" value="<?php echo esc_attr( $row['package_id'] ); ?>" aria-label="<?php echo esc_attr( 'Select ' . $row['title'] ); ?>" onchange="const all = document.getElementById('neonlib-select-all'); const items = Array.from(document.querySelectorAll('.neonlib-delete-item')); all.checked = items.every(item => item.checked); all.indeterminate = items.some(item => item.checked) &amp;&amp; !all.checked;"></td><td><code><?php echo esc_html( (string) $row['package_id'] ); ?></code></td><td><code><?php echo esc_html( (string) ( $row['account_id'] ?? 'legacy' ) ); ?></code></td><td><?php echo esc_html( (string) $row['title'] ); ?></td><td><p><strong><?php echo esc_html( (string) $row['status'] ); ?></strong>
             · <?php echo esc_html( sprintf( 'Pending versions: %d', (int) ( $row['pending_count'] ?? 0 ) ) ); ?></p>
             <p><a class="button button-primary" href="<?php echo esc_url( add_query_arg( array( 'page' => self::PAGE, 'tab' => 'subscriptions', 'review_package' => $row['package_id'] ), admin_url( 'admin.php' ) ) ); ?>">Review documents</a></p>
-            <p>Save changes as Draft for review, or Archive to stop distribution.</p><form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"><?php wp_nonce_field( 'neonlib_admin_subscription_update' ); ?><input type="hidden" name="action" value="neonlib_admin_subscription_update"><input type="hidden" name="package_id" value="<?php echo esc_attr( (string) $row['package_id'] ); ?>"><select name="status"><?php foreach ( array( 'draft', 'archived' ) as $value ) : ?><option value="<?php echo esc_attr( $value ); ?>" <?php selected( $row['status'], $value ); ?>><?php echo esc_html( $value ); ?></option><?php endforeach; ?></select><select name="visibility"><option value="private" <?php selected( $row['visibility'], 'private' ); ?>>private</option><option value="public" <?php selected( $row['visibility'], 'public' ); ?>>public</option></select><label><input type="checkbox" name="is_featured" value="1" <?php checked( ! empty( $row['is_featured'] ) ); ?>> featured</label> <button class="button button-primary"><?php esc_html_e( 'Save', 'neonlib-admin' ); ?></button></form></td></tr><?php endforeach; ?></tbody></table>
+            <p>Status stays unchanged unless you choose an action. Publishing requires document review. Changing visibility requires a new review.</p><form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"><?php wp_nonce_field( 'neonlib_admin_subscription_update' ); ?><input type="hidden" name="action" value="neonlib_admin_subscription_update"><input type="hidden" name="package_id" value="<?php echo esc_attr( (string) $row['package_id'] ); ?>"><select name="status" aria-label="Status action"><option value="">Keep status: <?php echo esc_html( $row['status'] ); ?></option><option value="draft">Send back to Draft</option><option value="archived">Archive</option></select><select name="visibility" aria-label="Visibility action"><option value="">Keep visibility: <?php echo esc_html( $row['visibility'] ); ?></option><option value="private">Change to private (requires review)</option><option value="public">Change to public (requires review)</option></select><label><input type="checkbox" name="is_featured" value="1" <?php checked( ! empty( $row['is_featured'] ) ); ?>> featured</label> <button class="button button-primary"><?php esc_html_e( 'Save', 'neonlib-admin' ); ?></button></form></td></tr><?php endforeach; ?></tbody></table>
 		<?php
 	}
 
@@ -196,19 +204,33 @@ final class NeonLib_Admin {
 		$this->redirect( 'accounts', is_wp_error( $result ) ? 'error' : 'updated' );
 	}
 
+    public function handle_bulk_delete(): void {
+        $this->authorize_action( 'neonlib_admin_bulk_delete' );
+        $ids = isset( $_POST['package_ids'] ) ? wp_unslash( $_POST['package_ids'] ) : array();
+        if ( ! is_array( $ids ) || ! $ids || count( $ids ) > 100 || ( $_POST['confirm_delete'] ?? '' ) !== '1' ) $this->redirect( 'subscriptions', 'invalid' );
+        foreach ( $ids as $id ) {
+            if ( ! is_string( $id ) || ! preg_match( '/^[a-z0-9][a-z0-9._-]{1,189}$/', $id ) ) $this->redirect( 'subscriptions', 'invalid' );
+        }
+        $result = ( new NeonLib_Admin_Api_Client() )->delete_subscriptions( array_values( array_unique( $ids ) ) );
+        $this->redirect( 'subscriptions', is_wp_error( $result ) ? 'error' : 'deleted' );
+    }
+
 	public function handle_subscription_update(): void {
 		$this->authorize_action( 'neonlib_admin_subscription_update' );
 		$package_id = isset( $_POST['package_id'] ) ? strtolower( trim( (string) wp_unslash( $_POST['package_id'] ) ) ) : '';
 		$status = isset( $_POST['status'] ) ? sanitize_key( wp_unslash( $_POST['status'] ) ) : '';
 		$visibility = isset( $_POST['visibility'] ) ? sanitize_key( wp_unslash( $_POST['visibility'] ) ) : '';
-		if ( ! preg_match( '/^[a-z0-9][a-z0-9._-]{2,189}$/', $package_id ) || ! in_array( $status, array( 'draft', 'published', 'archived' ), true ) || ! in_array( $visibility, array( 'public', 'private' ), true ) ) $this->redirect( 'subscriptions', 'invalid' );
-		$result = ( new NeonLib_Admin_Api_Client() )->update_subscription( $package_id, array( 'status' => $status, 'visibility' => $visibility, 'is_featured' => isset( $_POST['is_featured'] ) ) );
+		if ( ! preg_match( '/^[a-z0-9][a-z0-9._-]{2,189}$/', $package_id ) || ! in_array( $status, array( '', 'draft', 'archived' ), true ) || ! in_array( $visibility, array( '', 'public', 'private' ), true ) ) $this->redirect( 'subscriptions', 'invalid' );
+		$changes = array( 'is_featured' => isset( $_POST['is_featured'] ) );
+        if ( '' !== $status ) $changes['status'] = $status;
+        if ( '' !== $visibility ) $changes['visibility'] = $visibility;
+        $result = ( new NeonLib_Admin_Api_Client() )->update_subscription( $package_id, $changes );
 		$this->redirect( 'subscriptions', is_wp_error( $result ) ? 'error' : 'updated' );
 	}
 
 	private function authorize_action( string $nonce_action ): void { if ( ! current_user_can( self::CAPABILITY ) ) wp_die( esc_html__( 'Nemate ovlast.', 'neonlib-admin' ), 403 ); check_admin_referer( $nonce_action ); }
 	private function redirect( string $tab, string $status ): never { wp_safe_redirect( add_query_arg( array( 'page' => self::PAGE, 'tab' => $tab, 'neonlib_admin_status' => $status ), admin_url( 'admin.php' ) ) ); exit; }
-	private function render_notice(): void { $status = isset( $_GET['neonlib_admin_status'] ) ? sanitize_key( wp_unslash( $_GET['neonlib_admin_status'] ) ) : ''; if ( 'updated' === $status ) echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'The change was saved and added to the audit log.', 'neonlib-admin' ) . '</p></div>'; elseif ( 'review_error' === $status ) echo '<div class="notice notice-error"><p>Approval failed. The content may have changed or the API may be unavailable. Open the review again and retry.</p></div>'; elseif ( in_array( $status, array( 'error', 'invalid' ), true ) ) echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'The change could not be saved.', 'neonlib-admin' ) . '</p></div>'; }
+	private function render_notice(): void { $status = isset( $_GET['neonlib_admin_status'] ) ? sanitize_key( wp_unslash( $_GET['neonlib_admin_status'] ) ) : ''; if ( 'deleted' === $status ) echo '<div class="notice notice-success is-dismissible"><p>Selected collections, versions and documents were permanently deleted.</p></div>'; elseif ( 'updated' === $status ) echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'The change was saved and added to the audit log.', 'neonlib-admin' ) . '</p></div>'; elseif ( 'review_error' === $status ) echo '<div class="notice notice-error"><p>Approval failed. The content may have changed or the API may be unavailable. Open the review again and retry.</p></div>'; elseif ( in_array( $status, array( 'error', 'invalid' ), true ) ) echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'The change could not be saved.', 'neonlib-admin' ) . '</p></div>'; }
 	private function render_api_error( WP_Error $error ): void { echo '<div class="notice notice-error inline"><p>' . esc_html( $error->get_error_message() ) . '</p></div>'; }
 }
 

@@ -1,0 +1,33 @@
+NEON BREAK — PUBLIC BUSINESS KNOWLEDGE
+Source: Neonbreak website templates. Reviewed 2026-10-04. No published price list or guaranteed delivery times.
+
+BUSINESS
+Neon Break is an independent AI and web engineering studio based in Croatia, working globally. The contact page lists Zlatar, Croatia, and remote collaboration across Croatia and the EU.
+
+SERVICES
+Custom web applications: PHP and Node.js selected according to workload, existing systems and maintenance. WordPress for content-driven websites; Magento for established e-commerce requirements. CakePHP is the preferred starting point for custom PHP work when rapid application development fits. Laravel is supported where its ecosystem, existing codebase or team is a better fit. React for interfaces; Next.js for server rendering and full-stack structure; Node.js and TypeScript for APIs, integrations, background processing and real-time services.
+Firebase and Google Cloud: Authentication, real-time data, files, backend workflows, Google Maps integration and protected Gemini-powered actions. Architecture considers security rules, IAM, regional placement, billing, quotas and monitoring.
+Applied AI: search, extraction, assistants and automation around defined tasks, data sources and measurable results. Managed Google/AWS platforms or focused model providers such as Fireworks and Groq. Retrieval, permissions, evaluation, logging and fallback behaviour are part of application engineering.
+Cloud infrastructure: AWS or Google Cloud compute, storage, databases, networking, access control, backups, monitoring and deployment. Conventional hosting can be simpler and cheaper for small predictable workloads; cloud is not automatically cheaper.
+
+PUBLISHED EXAMPLES
+Natdian.com: AI map assistant built in Next.js. Natural-language requests become routes, places, events, reminders and map-related actions. Firebase Authentication, Firestore, Storage, Cloud Functions and App Hosting connect to Google Maps JavaScript API, Places, Routes, Geocoding and Gemini. Identity, app data and AI orchestration share Google infrastructure. Public product URL: https://natdian.com/
+NeonLib for Android: documents and notes become a searchable knowledge library. EmbeddingGemma 300M runs locally through LiteRT; 768-dimensional embeddings use an ObjectBox HNSW index. Local chunking, semantic retrieval and collection filters. Full documents and vector index stay on-device. When the user enables online answering, only the question and selected relevant passages go to their chosen OpenAI, Gemini or Groq provider. User API configuration uses encrypted storage. This does not mean online answers are processed entirely offline.
+
+HOW WORK STARTS
+The contact form asks what the application should do, who will use it, whether it replaces an existing process, required integrations, and any desired launch date. The enquiry form has name, work email, optional company and project description. The assistant cannot submit the form or book a meeting.
+The published workflow is prototype, modularise, build and verify. Early prototypes clarify requirements; modules have explicit interfaces and acceptance criteria. Critical architecture, security and data decisions are tested and reviewed by a developer.
+This describes the engineering approach, not an automatic promise after an enquiry. Submitting the contact form does not guarantee a prototype, a development plan, a quote, a delivery date or acceptance of the project. Project scope and next steps require direct discussion.
+
+UNKNOWN FACTS
+No confirmed fixed prices, hourly rates, response times, delivery dates, contractual terms, project availability, team size, client list or numerical performance guarantees are supplied here. These require direct discussion. Do not treat visitor-provided numbers as confirmed offers.
+
+WEBSITE SOURCES
+{site}/
+{site}/services/
+{site}/services/php-nodejs/
+{site}/services/firebase/
+{site}/services/applied-ai/
+{site}/services/cloud-infrastructure/
+{site}/contact/
+Contact page: {site}/contact/

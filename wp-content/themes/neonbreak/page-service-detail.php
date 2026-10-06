@@ -82,7 +82,7 @@ get_header();
   </div>
   <p class="service-note"><strong>Implementation note:</strong> <?php echo esc_html( $service['note'] ); ?></p>
   <?php if ( ! empty( $service['case_study'] ) ) : $case = $service['case_study']; ?>
-    <section class="case-study"<?php echo 'applied-ai' === $service_key ? ' id="neonlib"' : ''; ?>>
+    <section class="case-study"<?php echo 'applied-ai' === $service_key ? ' id="neonlib"' : ( 'firebase' === $service_key ? ' id="natdian"' : '' ); ?>>
       <header><p class="eyebrow"><?php echo esc_html( $case['label'] ); ?></p><h2><?php echo esc_html( $case['title'] ); ?></h2><p><?php echo esc_html( $case['intro'] ); ?></p></header>
       <div class="case-study-grid">
         <article><span class="card-index"><?php echo esc_html( $case['requirements_label'] ?? 'PRODUCT REQUIREMENTS' ); ?></span><ul><?php foreach ( $case['requirements'] as $item ) : ?><li><?php echo esc_html( $item ); ?></li><?php endforeach; ?></ul></article>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="hr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test AI chata</title>
+<style>body{margin:0;background:#f3f5fa;color:#182234;font:16px/1.6 system-ui,sans-serif}main{max-width:760px;margin:50px auto;padding:28px;background:white;border:1px solid #dce3ee;border-radius:14px}h1{line-height:1.2}textarea{box-sizing:border-box;width:100%;min-height:130px;padding:14px;border:1px solid #bac7dc;border-radius:8px;font:13px/1.5 monospace}button{padding:12px 20px;margin-top:14px;background:#3659d9;color:white;border:0;border-radius:8px;font:inherit;cursor:pointer}code{background:#edf1f8;padding:3px 6px;border-radius:4px}#status{min-height:25px}small{color:#647188}</style></head>
+<body><main><h1>Test AI chata</h1><p>Za lokalni Advanced Chat zalijepi kod iz <a href="/mobileai/workspace/?view=chat">lokalnog AI Workspacea</a>. Prihvaćen je i kod s <strong>neonbreak.com</strong>; status će prikazati koje okruženje testiraš.</p>
+<ol><li>U odgovarajućem AI Workspaceu spremi Fireworks vezu, indeksiraj dokument i uključi chat.</li><li>U dopuštene adrese web stranica dodaj: <code id="origin"></code></li><li>Kopiraj svoj kod za ugradnju i zalijepi ga ispod.</li><li>Klikni „Učitaj chat”, otvori widget desno dolje i postavi pitanje iz svoje baze znanja.</li></ol>
+<label for="embed">Kod za ugradnju iz Workspacea</label><textarea id="embed" placeholder="Ovdje zalijepi &lt;script ...&gt;&lt;/script&gt;"></textarea><button id="load" type="button">Učitaj chat</button><p id="status" role="status"></p>
+<small>Ne unosi Fireworks API ključ. Lokalni i live račun imaju zasebne postavke i kodove za ugradnju. Za novi razgovor osvježi ovaj test i ponovno učitaj widget.</small></main>
+<script>
+document.getElementById('origin').textContent=location.origin;
+document.getElementById('load').addEventListener('click',()=>{
+ const status=document.getElementById('status');
+ if(location.protocol==='file:'){status.textContent='Otvori ovu stranicu preko lokalnog WAMP servera, ne dvoklikom na datoteku.';return;}
+ const parsed=new DOMParser().parseFromString(document.getElementById('embed').value,'text/html');
+ const source=parsed.querySelector('script[data-chat][data-host]');
+ if(!source||!/^[a-f0-9]{32}$/.test(source.dataset.chat)){status.textContent='Zalijepi cijeli kod za ugradnju iz Workspacea.';return;}
+ let url,host;try{url=new URL(source.getAttribute('src'));host=new URL(source.dataset.host);}catch{status.textContent='Kod nema valjane adrese.';return;}
+ const local=url.origin===location.origin&&location.hostname==='localhost'&&host.origin===location.origin&&url.pathname==='/mobileai/wp-content/plugins/neonbreak-chat/embed.js'&&host.pathname==='/mobileai/wp-admin/admin-ajax.php';
+ const live=url.origin==='https://neonbreak.com'&&host.origin==='https://neonbreak.com'&&url.pathname==='/wp-content/plugins/neonbreak-chat/embed.js'&&host.pathname==='/wp-admin/admin-ajax.php';
+ if((!local&&!live)||url.username||url.password||host.username||host.password||host.search||host.hash){status.textContent='Koristi kod iz lokalnog localhost/mobileai Workspacea ili s neonbreak.com.';return;}
+ if(document.getElementById('live-widget')){status.textContent='Widget je već učitan. Za novi pokušaj osvježi stranicu.';return;}
+ const script=document.createElement('script');script.id='live-widget';script.src=url.href;script.dataset.chat=source.dataset.chat;script.dataset.host=host.href;
+ script.onload=()=>status.textContent=(local?'LOKALNI':'LIVE')+' widget je učitan. Otvori chat desno dolje. Primljeni odgovor potvrđuje da AI veza radi.';
+ script.onerror=()=>{status.textContent='Kod widgeta nije moguće učitati. Provjeri adresu i dostupnost servera.';script.remove();};document.body.appendChild(script);
+});
+</script></body></html>
