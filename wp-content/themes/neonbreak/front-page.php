@@ -14,6 +14,8 @@
   </div>
 </section>
 
+<section class="section" id="ai-chat-offer"><div class="nb-wrap cta-panel"><div><p class="eyebrow">AI Chat / A product for your business</p><h2>Your website. Your documents. Your AI chat.</h2><p>Start with a free website chat or choose paid Advanced Chat for answers from your documents, with RAG search and source references. Database integrations can be scoped as a custom project.</p><p class="nl-account-note">Advanced Chat is available by quote. AI usage is billed through your own Fireworks account.</p></div><div class="cta-actions"><div class="button-row"><a class="button button-primary" href="<?php echo esc_url( home_url( '/ai-chat/' ) ); ?>">Explore AI Chat &rarr;</a><a class="button" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Request a quote &rarr;</a></div></div></div></section>
+
 <section class="section" id="work">
   <div class="nb-wrap">
     <div class="section-head capability-head">
@@ -142,5 +144,5 @@
     <div class="cta-actions"><a class="button button-primary" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Let’s map the opportunity</a></div>
   </div>
 </section>
-<section class="section"><div class="nb-wrap cta-panel"><div><p class="eyebrow">Your first step into AI</p><h2>Your brand. Your knowledge. Your AI chat.</h2><p>Configure your assistant, connect your Fireworks account and embed it on your website. Start with chat and grow into business integrations.</p></div><div class="cta-actions"><a class="button button-primary" href="<?php echo esc_url( home_url( '/ai-chat/' ) ); ?>">Explore your AI chat →</a></div></div></section>
+
 <?php get_footer(); ?>

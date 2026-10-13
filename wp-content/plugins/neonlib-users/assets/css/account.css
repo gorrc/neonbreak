@@ -11,6 +11,19 @@
 	margin: 2rem auto;
 }
 
+.neonlib-transfer-panel { grid-column: 1 / -1; }
+.neonlib-list-actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+@media (max-width: 720px) { .neonlib-list-heading { flex-wrap: wrap; } }
+.neonlib-transfer-pairing { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; margin: 2rem 0; }
+.neonlib-transfer-pairing[hidden], .neonlib-transfer-ready[hidden] { display: none; }
+.neonlib-transfer-qr { width: 240px; max-width: 100%; height: auto; background: #fff; border-radius: 8px; image-rendering: pixelated; }
+.neonlib-transfer-code { display: inline-block; font-size: clamp(1.2rem, 3vw, 1.8rem); letter-spacing: .08em; overflow-wrap: anywhere; }
+.neonlib-transfer-status { padding: 1rem 0; font-weight: 600; }
+.neonlib-transfer-action { margin: 1rem 0; }
+.neonlib-transfer-timer { min-height: 1.6em; }
+.neonlib-transfer-countdown { display: inline-block; min-width: 5ch; font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) { .neonlib-transfer-pairing { grid-template-columns: 1fr; gap: 1rem; } }
+
 .neonlib-auth-grid,
 .neonlib-dashboard-grid {
 	display: grid;
@@ -475,3 +488,32 @@
 		grid-column: auto;
 	}
 }
+
+/* Keep each subscription readable within a phone's viewport. */
+@media (max-width: 720px) {
+ .neonlib-subscriptions-panel { min-width: 0; }
+ .neonlib-subscriptions-panel .neonlib-table-wrap { overflow: visible; border: 0; }
+ .neonlib-subscriptions-table,
+ .neonlib-subscriptions-table tbody { display: block; width: 100%; }
+ .neonlib-subscriptions-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+ .neonlib-subscriptions-table tbody tr { display: block; margin-bottom: 1rem; border: 1px solid var(--neonlib-border); border-radius: 12px; padding: .5rem 0; }
+ .neonlib-subscriptions-table tbody tr:last-child { margin-bottom: 0; }
+ .neonlib-subscriptions-table tbody tr td { display: grid; grid-template-columns: minmax(0, 1fr); gap: .3rem; padding: .65rem 1rem; border: 0; min-width: 0; overflow-wrap: anywhere; }
+ .neonlib-subscriptions-table td::before { content: attr(data-label); color: var(--neonlib-muted); font-size: .75rem; font-weight: 600; }
+ .neonlib-subscriptions-table td code { white-space: normal; overflow-wrap: anywhere; }
+ .neonlib-subscriptions-table .neonlib-row-actions { flex-wrap: wrap; white-space: normal; gap: .5rem 1rem; }
+ .neonlib-subscriptions-table .neonlib-row-actions a,
+ .neonlib-subscriptions-table .neonlib-link-danger { display: inline-flex; align-items: center; min-height: 44px; }
+ .neonlib-list-actions { width: 100%; }
+ .neonlib-list-actions .neonlib-button { white-space: normal; text-align: center; }
+}
+
+
+.neonlib-transfer-code-row { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; }
+.neonlib-transfer-code-row .neonlib-transfer-action { margin: 0; }
+
+.neonlib-account-draft { border: 1px solid var(--neonlib-border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; overflow-wrap: anywhere; }
+.neonlib-account-draft h4 { margin: .75rem 0; }
+.neonlib-form-actions { flex-wrap: wrap; }
+
+.neonlib-transfer-qr svg { display: block; width: 100%; height: auto; }

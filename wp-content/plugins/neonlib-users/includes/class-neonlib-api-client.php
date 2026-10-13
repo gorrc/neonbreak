@@ -36,6 +36,12 @@ final class NeonLib_Api_Client {
 		return is_wp_error( $result ) ? $result : true;
 	}
 
+	public function managed_ai_device( int $user_id, string $id, ?string $code = null ): array|WP_Error {
+        if (!preg_match('/^[a-f0-9]{32}$/', $id)) return new WP_Error('invalid_device', 'Invalid connection.');
+        $result = $this->request($code === null ? 'GET' : 'POST', '/api/v1/account/ai/devices/' . $id, $code === null ? null : array('code' => $code), $user_id);
+        return is_wp_error($result) ? $result : (array)($result['data'] ?? array());
+    }
+
 	public function subscriptions( int $user_id ): array|WP_Error {
 		$result = $this->request( 'GET', '/api/v1/account/subscriptions', null, $user_id );
 		return is_wp_error( $result ) ? $result : (array) ( $result['data'] ?? array() );
@@ -53,6 +59,20 @@ final class NeonLib_Api_Client {
 
 	public function create_subscription( int $user_id, array $subscription ): array|WP_Error {
 		return $this->request( 'POST', '/api/v1/account/subscriptions', $subscription, $user_id );
+	}
+
+	public function subscription( int $user_id, string $package_id ): array|WP_Error {
+		$result = $this->request( 'GET', '/api/v1/account/subscriptions/' . rawurlencode( $package_id ), null, $user_id );
+		return is_wp_error( $result ) ? $result : (array) ( $result['data'] ?? array() );
+	}
+
+	public function mobile_transfer( int $user_id, string $method, string $session_id = '', bool $draft = false ): array|WP_Error {
+		if ( ! in_array( $method, array( 'GET', 'POST', 'DELETE' ), true ) || ( '' !== $session_id && ! preg_match( '/^[a-f0-9]{32}$/', $session_id ) ) ) {
+			return new WP_Error( 'invalid_transfer', 'Invalid transfer request.' );
+		}
+		$path = '/api/v1/account/mobile-transfers' . ( $session_id ? '/' . $session_id : '' ) . ( $draft ? '/draft' : '' );
+		$result = $this->request( $method, $path, null, $user_id );
+		return is_wp_error( $result ) ? $result : (array) ( $result['data'] ?? array() );
 	}
 
 	public function update_subscription( int $user_id, string $package_id, array $changes ): array|WP_Error {

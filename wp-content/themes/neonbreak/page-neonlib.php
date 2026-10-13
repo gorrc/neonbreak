@@ -3,15 +3,17 @@
 <section class="nl-publish-hero"><div class="nb-wrap nl-publish-grid">
   <div>
     <p class="eyebrow">Android knowledge library</p>
-    <p class="nl-account-note" role="status">Waiting for Google Play approval.</p>
+    <p class="nl-account-note" role="status">Available now on Google Play.</p>
     <h1>Your knowledge, on your device.<br><span class="hero-accent">Expanded by subscriptions.</span></h1>
     <p class="nl-publish-lead">NeonLib is an Android application that turns your own documents and notes into a private, searchable knowledge base. Add maintained knowledge subscriptions when you want trusted content from publishers, teams or organisations in the same library.</p>
-    <div class="button-row"><a class="button button-primary" href="<?php echo esc_url( home_url( '/account/' ) ); ?>">Create a publisher account</a><a class="button" href="#subscriptions">See how the library grows &darr;</a></div>
+    <div class="button-row"><a class="button button-primary" href="https://play.google.com/store/apps/details?id=com.neonbreak.neonlib" target="_blank" rel="noopener noreferrer">Get NeonLib on Google Play &rarr;</a></div>
+    <p class="nl-account-note">Download NeonLib from Google Play and build your searchable knowledge library on your Android device.</p>
+    <div class="button-row"><a class="button" href="<?php echo esc_url( home_url( '/account/' ) ); ?>">Create a publisher account</a><a class="button" href="#subscriptions">See how the library grows &darr;</a></div>
     <p class="nl-account-note">Want to publish your own knowledge subscription? Create a NeonLib account to organise documents, manage access and release versioned updates to Android users.</p>
   </div>
   <aside class="nl-browser" aria-label="NeonLib Android knowledge library preview">
     <div class="nl-browser-bar"><i></i><i></i><i></i><span>NeonLib · Android</span></div>
-    <div class="nl-browser-body"><span class="nl-browser-label">YOUR KNOWLEDGE LIBRARY</span><h2>Search everything you trust</h2><p>Private documents + subscribed knowledge</p><div class="nl-browser-search">Ask your knowledge base <b>&#128269;</b></div><div class="nl-browser-rows"><span><i></i>My private library</span><span><i></i>Product Support · Subscription</span><span><i></i>Team Handbook · Subscription</span></div><strong class="nl-browser-status">WAITING FOR GOOGLE PLAY APPROVAL</strong></div>
+    <div class="nl-browser-body"><span class="nl-browser-label">YOUR KNOWLEDGE LIBRARY</span><h2>Search everything you trust</h2><p>Private documents + subscribed knowledge</p><div class="nl-browser-search">Ask your knowledge base <b>&#128269;</b></div><div class="nl-browser-rows"><span><i></i>My private library</span><span><i></i>Product Support · Subscription</span><span><i></i>Team Handbook · Subscription</span></div><strong class="nl-browser-status">AVAILABLE ON GOOGLE PLAY</strong></div>
   </aside>
 </div></section>
 
@@ -41,7 +43,7 @@
 
 <section class="section nl-final"><div class="nb-wrap"><div class="cta-panel"><div><p class="eyebrow">Publish your knowledge</p><h2>Create an account to build, manage and release your own subscriptions.</h2><p class="nl-account-note">The publisher account is for subscription creation and access management. Your private knowledge library remains in the Android application.</p></div><div class="cta-actions"><a class="button button-primary" href="<?php echo esc_url( home_url( '/account/' ) ); ?>">Create a publisher account &rarr;</a></div></div></div></section>
 
-<p class="nl-account-note"><a href="<?php echo esc_url( home_url( '/neonlib/privacy-policy/' ) ); ?>">NeonLib Privacy Policy</a></p>
+<div class="nb-wrap"><p class="nl-account-note"><a href="<?php echo esc_url( home_url( '/neonlib/privacy-policy/' ) ); ?>">NeonLib Privacy Policy</a></p></div>
 
 <div class="nb-wrap"><p><a href="<?php echo esc_url( home_url( '/neonlib/delete-data/' ) ); ?>">Request deletion of NeonLib data</a></p></div>
 <?php get_footer(); ?>

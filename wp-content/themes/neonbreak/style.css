@@ -84,6 +84,23 @@ h1 { max-width: 900px; font-size: clamp(44px, 5.6vw, 72px); font-weight: 650; }
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 24px; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; font: 600 14px/1 var(--nb-display); transition: transform .2s, box-shadow .2s, border-color .2s; }
 .button:hover { transform: translateY(-2px); border-color: var(--nb-cyan); }
 .button-primary { color: #061014; background: var(--nb-cyan); border-color: var(--nb-cyan); box-shadow: 0 0 28px rgba(114,241,255,.2); }
+.nl-publish-hero .button:not(.button-primary) {
+    color: #f5fbff;
+    border: 2px solid rgba(114,241,255,.65);
+    background: rgba(114,241,255,.08);
+    box-shadow: 0 0 18px rgba(114,241,255,.1);
+    transition: transform .2s, box-shadow .2s, border-color .2s, background .2s;
+}
+.nl-publish-hero .button:not(.button-primary):hover {
+    border-color: var(--nb-cyan);
+    background: rgba(114,241,255,.16);
+    box-shadow: 0 0 24px rgba(114,241,255,.2);
+}
+.nl-publish-hero .button:not(.button-primary):focus-visible {
+    outline: 2px solid var(--nb-cyan);
+    outline-offset: 4px;
+    background: rgba(114,241,255,.16);
+}
 .hero-meta { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 72px; color: #778296; font: 500 12px/1.4 var(--nb-display); letter-spacing: .1em; text-transform: uppercase; }
 .hero-meta span { display: flex; align-items: center; gap: 9px; }
 .hero-meta i { width: 6px; height: 6px; border-radius: 50%; background: var(--nb-lime); box-shadow: 0 0 8px var(--nb-lime); }
@@ -282,3 +299,15 @@ h1 { max-width: 900px; font-size: clamp(44px, 5.6vw, 72px); font-weight: 650; }
 @media(min-width:821px) and (max-width:1050px){.site-nav{gap:16px}.nav-product{padding-left:16px}.header-inner{gap:18px}}
 
 .site-nav a[aria-current]{color:var(--nb-cyan)!important;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:7px}.nav-dropdown-menu a[aria-current]{background:rgba(114,241,255,.08)}
+
+/* Keep the full product navigation usable on tablet screens. */
+@media(min-width:821px) and (max-width:1180px){
+.menu-toggle{display:block}
+.site-nav{display:none;position:absolute;inset:78px 0 auto;padding:24px 20px;flex-direction:column;align-items:flex-start;background:#0b0e16;border-bottom:1px solid rgba(255,255,255,.08);max-height:calc(100dvh - 78px);overflow-y:auto}
+.site-nav.is-open{display:flex}
+.nav-dropdown{width:100%}.nav-dropdown-label{justify-content:space-between}
+.nav-dropdown-menu{position:static;width:100%;margin-top:10px;padding:5px;transform:none;border-color:rgba(255,255,255,.08);box-shadow:none}.nav-dropdown-menu::before{display:none}
+.nav-product{width:100%;margin-top:8px;padding:18px 0 0;border-top:1px solid rgba(255,255,255,.1);border-left:0}
+.nav-product + .nav-product{padding-left:0}
+}
+@media(min-width:1181px){.site-nav{gap:18px}.nav-product{padding-left:16px}}

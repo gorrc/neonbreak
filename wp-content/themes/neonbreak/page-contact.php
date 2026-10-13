@@ -9,6 +9,8 @@
     <?php if ( 'rate' === $contact_status ) : ?><div class="form-message form-error" role="alert">Please wait a minute before sending another message.</div><?php endif; ?>
     <form class="contact-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
       <input type="hidden" name="action" value="neonbreak_contact"><?php wp_nonce_field( 'neonbreak_contact', 'neonbreak_contact_nonce' ); ?>
+      <?php global $TRP_LANGUAGE; ?>
+      <input type="hidden" name="neonbreak_contact_language" value="<?php echo esc_attr( $TRP_LANGUAGE ?? '' ); ?>">
       <div class="honeypot" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
       <div class="field-grid"><label>Name<input name="name" autocomplete="name" required></label><label>Work email<input name="email" type="email" autocomplete="email" required></label></div>
       <label>Company <span>(optional)</span><input name="company" autocomplete="organization"></label>

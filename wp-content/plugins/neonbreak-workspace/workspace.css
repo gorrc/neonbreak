@@ -13,3 +13,18 @@
 .ws-backup-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.ws-backup-heading h2{margin:0}.ws-backup-heading form{margin:0}.ws-card .ws-backup-heading button{width:auto;margin:0;gap:10px;background:#eef2fb;color:#3659d9;border:1px solid #d7e1f6;white-space:normal}.ws-chat-backup #nb-chat-import{border-top:1px solid #e2e7ef;margin-top:22px;padding-top:22px;max-width:600px}.ws-chat-backup #nb-chat-import button{width:auto;margin:14px 0 0}@media(max-width:650px){.ws-backup-heading{align-items:flex-start;flex-direction:column}.ws-backup-heading form,.ws-card .ws-backup-heading button{width:100%}}
 .ws-search-grid{margin-top:24px}.ws-search-grid pre{max-width:100%;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#142238;color:#dfebff;padding:18px;border-radius:8px;font:12px/1.7 monospace}.ws-search-json{margin:20px 0}.ws-search-json summary{cursor:pointer;color:#3659d9}.ws-search-secret{margin:20px 0;padding:18px;border:1px solid #bce0cb;background:#f0faf4;border-radius:9px}.ws-search-secret strong{font-size:13px}.ws-search-secret input{font:12px/1.6 monospace}.ws-search-key-actions{display:flex;gap:10px;flex-wrap:wrap}.ws-search-key-actions button{width:auto;margin:0;font-size:12px}.ws-search-key-actions form:last-child:not(:first-child) button{background:#f4f6fa;border:1px solid #e2e7ef;color:#9a3434}.ws-search-grid>section{min-width:0}.ws-search-grid p{font-size:13px}.ws-search-grid #nb-search-results article{margin-top:18px;border-top:1px solid #e2e7ef;padding-top:18px;overflow-wrap:anywhere}.ws-search-grid #nb-search-results h3{font-size:16px;margin:0 0 6px}.ws-search-grid #nb-search-results small{color:#738096}.ws-search-grid #nb-search-results p{white-space:pre-wrap}.ws-search-grid #nb-search-results a{font-size:12px}
 .ws-knowledge-upload{margin:24px 0}.ws-knowledge-links{display:flex;gap:20px;flex-wrap:wrap;margin:20px 0}.ws-knowledge-upload textarea{min-height:220px}
+
+/* Keep both products visible on phones without a wide scrolling table. */
+@media(max-width:650px){
+ .ws-comparison-refined .ws-comparison-scroll{overflow:visible}
+ .ws-comparison-refined table{display:block;min-width:0;width:100%}
+ .ws-comparison-refined caption{display:block;margin-bottom:16px}
+ .ws-comparison-refined thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ .ws-comparison-refined tbody{display:block}
+ .ws-comparison-refined tbody tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);margin-bottom:14px;border:1px solid #dce3ef;border-radius:10px;overflow:hidden}
+ .ws-comparison-refined tbody th{grid-column:1/-1;width:auto;padding:9px 12px;background:#edf2f8;color:#445570;border-bottom:1px solid #dce3ef;font-size:13px}
+ .ws-comparison-refined tbody td{width:auto;min-width:0;padding:12px;font-size:13px;line-height:1.55;border-bottom:0;overflow-wrap:anywhere}
+ .ws-comparison-refined tbody td:nth-child(3){border-left:1px solid #e7ecf4}
+ .ws-comparison-refined tbody td::before{content:attr(data-label);display:block;font-size:11px;font-weight:700;line-height:1.4;margin-bottom:8px;color:#223c78}
+ .ws-comparison-refined tbody td:nth-child(3)::before{color:#654095}
+}

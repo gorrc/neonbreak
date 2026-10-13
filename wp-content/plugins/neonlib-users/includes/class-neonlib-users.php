@@ -114,6 +114,8 @@ final class NeonLib_Users {
 			NEONLIB_USERS_VERSION . '-hr1',
 			true
 		);
+		wp_enqueue_script( 'neonlib-qr', NEONLIB_USERS_URL . 'assets/js/qrcodegen.js', array(), NEONLIB_USERS_VERSION, true );
+		wp_enqueue_script( 'neonlib-mobile-transfer', NEONLIB_USERS_URL . 'assets/js/mobile-transfer.js', array( 'neonlib-qr' ), NEONLIB_USERS_VERSION, true );
 	}
 
 	public function render_account(): string {
@@ -127,6 +129,10 @@ final class NeonLib_Users {
 	private function render_authentication(): string {
 		$messages = $this->registration_messages();
 		$redirect = $this->account_url();
+		$transfer = sanitize_text_field( wp_unslash( $_GET['mobile_transfer'] ?? '' ) );
+		if ( preg_match( '/^[a-f0-9]{32}$/', $transfer ) ) {
+			$redirect = add_query_arg( array( 'neonlib_view' => 'new-subscription', 'mobile_transfer' => $transfer ), $redirect );
+		}
 
 		ob_start();
 		?>
@@ -177,13 +183,15 @@ final class NeonLib_Users {
 	private function render_dashboard(): string {
 		$user = wp_get_current_user();
 		$view = isset( $_GET['neonlib_view'] ) ? sanitize_key( wp_unslash( $_GET['neonlib_view'] ) ) : 'subscriptions';
-		if ( ! in_array( $view, array( 'account', 'subscriptions', 'new-subscription', 'edit-subscription', 'publish' ), true ) ) {
+		if ( ! in_array( $view, array( 'account', 'subscriptions', 'new-subscription', 'edit-subscription', 'publish', 'mobile-transfer' ), true ) ) {
 			$view = 'subscriptions';
 		}
 		$new_subscription_values = array( 'package_id' => '', 'title' => '', 'description' => '', 'language' => 'en', 'visibility' => 'private', 'documents_json' => '[]' );
+		$had_saved_values = false;
 		if ( 'new-subscription' === $view ) {
 			$saved_values = get_transient( 'neonlib_subscription_form_' . $user->ID );
-			if ( is_array( $saved_values ) ) {
+			if ( is_array( $saved_values ) && ( $saved_values['mobile_transfer'] ?? '' ) === ( $_GET['mobile_transfer'] ?? '' ) ) {
+				$had_saved_values = true;
 				$new_subscription_values = array_merge( $new_subscription_values, array_intersect_key( $saved_values, $new_subscription_values ) );
 				delete_transient( 'neonlib_subscription_form_' . $user->ID );
 			}
@@ -200,6 +208,8 @@ final class NeonLib_Users {
 		$account_id   = '';
 		$publisher_name = '';
 		$subscriptions = array();
+		$mobile_drafts = array();
+		$mobile_draft_error = null;
 		$api_error    = null;
 		if ( ! $user->has_cap( 'manage_options' ) ) {
 			$link = $this->ensure_account_link( $user->ID );
@@ -218,13 +228,35 @@ final class NeonLib_Users {
 					}
 				}
 				if ( in_array( $view, array( 'subscriptions', 'edit-subscription', 'publish' ), true ) ) {
+					if ( 'subscriptions' === $view ) {
+						$drafts = ( new NeonLib_Api_Client() )->mobile_transfer( $user->ID, 'GET' );
+						if ( is_wp_error( $drafts ) ) $mobile_draft_error = $drafts;
+						else $mobile_drafts = $drafts;
+					}
 					$result = ( new NeonLib_Api_Client() )->subscriptions( $user->ID );
 					if ( is_wp_error( $result ) ) {
 						$api_error = $result;
 					} else {
 						$subscriptions = $result;
+						if ( 'subscriptions' === $view ) {
+							foreach ( $subscriptions as &$subscription ) {
+								$versions = ( new NeonLib_Api_Client() )->versions( $user->ID, (string) $subscription['package_id'] );
+								$subscription['status_label'] = self::subscription_status_label( $subscription, $versions );
+							}
+							unset( $subscription );
+						}
 					}
 				}
+			}
+		}
+		$mobile_transfer_id = '';
+		if ( 'new-subscription' === $view && ! $user->has_cap( 'manage_options' ) && isset( $_GET['mobile_transfer'] ) ) {
+			$mobile_transfer_id = sanitize_text_field( wp_unslash( $_GET['mobile_transfer'] ) );
+			$import = NeonLib_Mobile_Transfer::instance()->editor_values( $user->ID, $mobile_transfer_id );
+			if ( is_wp_error( $import ) ) {
+				$api_error = $import;
+			} elseif ( ! $had_saved_values ) {
+				$new_subscription_values = array_merge( $new_subscription_values, $import );
 			}
 		}
 		$selected_subscription = null;
@@ -266,6 +298,7 @@ final class NeonLib_Users {
 		ob_start();
 		?>
 		<div class="neonlib-account">
+			<?php echo NeonLib_Mobile_Transfer::instance()->notice(); ?>
 			<?php echo $this->subscription_notice(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from escaped strings. ?>
 			<header class="neonlib-dashboard-header">
 				<div>
@@ -276,10 +309,13 @@ final class NeonLib_Users {
 			</header>
 			<nav class="neonlib-dashboard-tabs" aria-label="<?php esc_attr_e( 'Account sections', 'neonlib-users' ); ?>">
 				<a class="<?php echo 'account' === $view ? 'is-active' : ''; ?>" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'account', $this->account_url() ) ); ?>" <?php echo 'account' === $view ? 'aria-current="page"' : ''; ?>><?php esc_html_e( 'Account', 'neonlib-users' ); ?></a>
-				<a class="<?php echo in_array( $view, array( 'subscriptions', 'new-subscription', 'edit-subscription', 'publish' ), true ) ? 'is-active' : ''; ?>" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'subscriptions', $this->account_url() ) ); ?>" <?php echo in_array( $view, array( 'subscriptions', 'new-subscription', 'edit-subscription', 'publish' ), true ) ? 'aria-current="page"' : ''; ?>><?php esc_html_e( 'Subscriptions', 'neonlib-users' ); ?></a>
+				<a class="<?php echo in_array( $view, array( 'subscriptions', 'new-subscription', 'edit-subscription', 'publish', 'mobile-transfer' ), true ) ? 'is-active' : ''; ?>" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'subscriptions', $this->account_url() ) ); ?>" <?php echo in_array( $view, array( 'subscriptions', 'new-subscription', 'edit-subscription', 'publish', 'mobile-transfer' ), true ) ? 'aria-current="page"' : ''; ?>><?php esc_html_e( 'Subscriptions', 'neonlib-users' ); ?></a>
 			</nav>
 
 			<div class="neonlib-dashboard-grid">
+				<?php if ( 'mobile-transfer' === $view && ! $user->has_cap( 'manage_options' ) && ! $api_error instanceof WP_Error ) : ?>
+					<?php echo NeonLib_Mobile_Transfer::instance()->render( $this->account_url(), $publisher_name ); ?>
+				<?php endif; ?>
 				<?php if ( $api_error instanceof WP_Error ) : ?>
 					<div class="neonlib-notice neonlib-notice--error">
 						<?php esc_html_e( 'We could not connect to the NeonLib service. Please try again later.', 'neonlib-users' ); ?>
@@ -299,6 +335,8 @@ final class NeonLib_Users {
 							<dd><code><?php echo esc_html( $account_id ); ?></code></dd>
 						<?php endif; ?>
 					</dl>
+					<p><a class="neonlib-button" href="<?php echo esc_url( wp_lostpassword_url( $this->account_url() ) ); ?>"><?php esc_html_e( 'Change password', 'neonlib-users' ); ?></a></p>
+					<p class="description"><?php esc_html_e( 'Request an email with a link to set a new password. Your current password stays unchanged until you complete the reset.', 'neonlib-users' ); ?></p>
 					<?php if ( ! $user->has_cap( 'manage_options' ) ) : ?>
 					<form method="post" action="<?php echo esc_url( $this->account_url() ); ?>">
 						<?php wp_nonce_field( 'neonlib_profile_action', 'neonlib_profile_nonce' ); ?>
@@ -314,17 +352,19 @@ final class NeonLib_Users {
 
 				<?php if ( 'subscriptions' === $view ) : ?>
 				<section class="neonlib-panel neonlib-subscriptions-panel">
-					<div class="neonlib-list-heading"><div><p class="neonlib-eyebrow"><?php esc_html_e( 'Knowledge packages', 'neonlib-users' ); ?></p><h3><?php esc_html_e( 'Subscriptions', 'neonlib-users' ); ?></h3></div><?php if ( ! $user->has_cap( 'manage_options' ) ) : ?><a class="neonlib-button" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'new-subscription', $this->account_url() ) ); ?>"><?php esc_html_e( 'Add New', 'neonlib-users' ); ?></a><?php endif; ?></div>
+					<div class="neonlib-list-heading"><div><p class="neonlib-eyebrow"><?php esc_html_e( 'Knowledge packages', 'neonlib-users' ); ?></p><h3><?php esc_html_e( 'Subscriptions', 'neonlib-users' ); ?></h3></div><?php if ( ! $user->has_cap( 'manage_options' ) ) : ?><div class="neonlib-list-actions"><a class="neonlib-button" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'mobile-transfer', $this->account_url() ) ); ?>"><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Receive a collection from your phone', 'Preuzmi zbirku sa mobitela' ) ); ?></a><a class="neonlib-button" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'new-subscription', $this->account_url() ) ); ?>"><?php esc_html_e( 'Add New', 'neonlib-users' ); ?></a></div><?php endif; ?></div>
+					<?php if ( $mobile_draft_error ) : ?><p role="alert"><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Saved drafts could not be loaded. Please retry; your documents have not been deleted.', 'Spremljeni nacrti nisu učitani. Pokušaj ponovno; dokumenti nisu obrisani.' ) ); ?></p><?php endif; ?>
+					<?php echo NeonLib_Mobile_Transfer::instance()->draft_cards( $mobile_drafts, $user->ID, $this->account_url() ); // Escaped by renderer. ?>
 					<?php if ( $user->has_cap( 'manage_options' ) ) : ?>
 						<div class="neonlib-empty-state"><p><?php esc_html_e( 'Administrator accounts manage all subscriptions in NeonLib Admin.', 'neonlib-users' ); ?></p><a class="neonlib-button" href="<?php echo esc_url( admin_url( 'admin.php?page=neonlib-admin&tab=subscriptions' ) ); ?>"><?php esc_html_e( 'Open NeonLib Admin', 'neonlib-users' ); ?></a></div>
 					<?php elseif ( $api_error instanceof WP_Error ) : ?>
 						<p><?php esc_html_e( 'Subscriptions are unavailable until the connection to the NeonLib service is restored.', 'neonlib-users' ); ?></p>
-					<?php elseif ( array() === $subscriptions ) : ?>
+					<?php elseif ( array() === $subscriptions && array() === $mobile_drafts ) : ?>
 						<div class="neonlib-empty-state"><p><?php esc_html_e( 'You do not have any subscriptions yet.', 'neonlib-users' ); ?></p><a class="neonlib-button" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'new-subscription', $this->account_url() ) ); ?>"><?php esc_html_e( 'Create your first subscription', 'neonlib-users' ); ?></a></div>
 					<?php else : ?>
 						<div class="neonlib-table-wrap"><table class="neonlib-subscriptions-table"><thead><tr><th><?php esc_html_e( 'Title', 'neonlib-users' ); ?></th><th><?php esc_html_e( 'Package ID', 'neonlib-users' ); ?></th><th><?php esc_html_e( 'Status', 'neonlib-users' ); ?></th><th><?php esc_html_e( 'Visibility', 'neonlib-users' ); ?></th><th><?php esc_html_e( 'Updated', 'neonlib-users' ); ?></th><th><?php esc_html_e( 'Actions', 'neonlib-users' ); ?></th></tr></thead><tbody>
 							<?php foreach ( $subscriptions as $subscription ) : ?>
-								<tr><td><strong><?php echo esc_html( (string) ( $subscription['title'] ?? '' ) ); ?></strong></td><td><code><?php echo esc_html( (string) ( $subscription['package_id'] ?? '' ) ); ?></code></td><td><span class="neonlib-status"><?php echo esc_html( (string) ( $subscription['status'] ?? '' ) ); ?></span></td><td><?php echo esc_html( (string) ( $subscription['visibility'] ?? '' ) ); ?></td><td><?php echo esc_html( isset( $subscription['updated_at'] ) ? wp_date( get_option( 'date_format' ), strtotime( (string) $subscription['updated_at'] ) ) : '—' ); ?></td><td><div class="neonlib-row-actions"><a href="<?php echo esc_url( add_query_arg( array( 'neonlib_view' => 'edit-subscription', 'package_id' => (string) $subscription['package_id'] ), $this->account_url() ) ); ?>"><?php esc_html_e( 'Edit', 'neonlib-users' ); ?></a><a href="<?php echo esc_url( add_query_arg( array( 'neonlib_view' => 'publish', 'package_id' => (string) $subscription['package_id'] ), $this->account_url() ) ); ?>"><?php esc_html_e( 'Documents', 'neonlib-users' ); ?></a><form method="post" action="<?php echo esc_url( $this->account_url() ); ?>" onsubmit="return confirm('<?php echo esc_js( __( 'Permanently delete this subscription and all its versions?', 'neonlib-users' ) ); ?>');">
+								<tr><td data-label="<?php echo esc_attr__( 'Title', 'neonlib-users' ); ?>"><strong><?php echo esc_html( (string) ( $subscription['title'] ?? '' ) ); ?></strong></td><td data-label="<?php echo esc_attr__( 'Package ID', 'neonlib-users' ); ?>"><code><?php echo esc_html( (string) ( $subscription['package_id'] ?? '' ) ); ?></code></td><td data-label="<?php echo esc_attr__( 'Status', 'neonlib-users' ); ?>"><span class="neonlib-status"><?php echo esc_html( (string) ( $subscription['status_label'] ?? $subscription['status'] ?? '' ) ); ?></span></td><td data-label="<?php echo esc_attr__( 'Visibility', 'neonlib-users' ); ?>"><?php echo esc_html( (string) ( $subscription['visibility'] ?? '' ) ); ?></td><td data-label="<?php echo esc_attr__( 'Updated', 'neonlib-users' ); ?>"><?php echo esc_html( isset( $subscription['updated_at'] ) ? wp_date( get_option( 'date_format' ), strtotime( (string) $subscription['updated_at'] ) ) : '—' ); ?></td><td data-label="<?php echo esc_attr__( 'Actions', 'neonlib-users' ); ?>"><div class="neonlib-row-actions"><a href="<?php echo esc_url( add_query_arg( array( 'neonlib_view' => 'edit-subscription', 'package_id' => (string) $subscription['package_id'] ), $this->account_url() ) ); ?>"><?php esc_html_e( 'Edit', 'neonlib-users' ); ?></a><a href="<?php echo esc_url( add_query_arg( array( 'neonlib_view' => 'publish', 'package_id' => (string) $subscription['package_id'] ), $this->account_url() ) ); ?>"><?php esc_html_e( 'Documents', 'neonlib-users' ); ?></a><form method="post" action="<?php echo esc_url( $this->account_url() ); ?>" onsubmit="return confirm('<?php echo esc_js( __( 'Permanently delete this subscription and all its versions?', 'neonlib-users' ) ); ?>');">
 										<?php wp_nonce_field( 'neonlib_subscription_action', 'neonlib_subscription_nonce' ); ?>
 										<input type="hidden" name="neonlib_action" value="delete_subscription">
 										<input type="hidden" name="package_id" value="<?php echo esc_attr( (string) $subscription['package_id'] ); ?>">
@@ -345,21 +385,31 @@ final class NeonLib_Users {
 						<a class="neonlib-button" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'account', $this->account_url() ) ); ?>"><?php esc_html_e( 'Open account settings', 'neonlib-users' ); ?></a>
 					</div>
 					<?php else : ?>
-					<p class="neonlib-eyebrow"><?php esc_html_e( 'Add New', 'neonlib-users' ); ?></p><h3><?php esc_html_e( 'New subscription', 'neonlib-users' ); ?></h3>
+					<?php if ( $mobile_transfer_id ) : ?><h3><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Confirm your collection', 'Potvrdi svoju zbirku' ) ); ?></h3><?php else : ?><p class="neonlib-eyebrow"><?php esc_html_e( 'Add New', 'neonlib-users' ); ?></p><h3><?php esc_html_e( 'New subscription', 'neonlib-users' ); ?></h3><?php endif; ?>
 					<form class="neonlib-document-form" method="post" action="<?php echo esc_url( $this->account_url() ); ?>">
 						<?php wp_nonce_field( 'neonlib_subscription_action', 'neonlib_subscription_nonce' ); ?>
-						<input type="hidden" name="neonlib_action" value="create_subscription">
-						<label><?php esc_html_e( 'Package ID', 'neonlib-users' ); ?><input name="package_id" value="<?php echo esc_attr( (string) $new_subscription_values['package_id'] ); ?>" pattern="[a-z0-9][a-z0-9._-]{2,189}" placeholder="my.subscription" required></label>
+						<input type="hidden" name="neonlib_action" value="<?php echo $mobile_transfer_id ? 'submit_mobile_transfer' : 'create_subscription'; ?>">
+						<?php if ( $mobile_transfer_id ) : ?>
+							<?php wp_nonce_field( 'neonlib_mobile_transfer', 'neonlib_mobile_nonce' ); ?>
+							<input type="hidden" name="mobile_transfer" value="<?php echo esc_attr( $mobile_transfer_id ); ?>">
+							<p class="neonlib-form-wide"><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Review the received documents and description. Nothing is published until an administrator approves it.', 'Pregledaj primljene dokumente i opis. Ništa se ne objavljuje dok administrator ne odobri zbirku.' ) ); ?></p>
+						<?php endif; ?>
+						<?php if ( $mobile_transfer_id ) : ?><input type="hidden" name="package_id" value="<?php echo esc_attr( (string) $new_subscription_values['package_id'] ); ?>"><?php else : ?><label><?php esc_html_e( 'Package ID', 'neonlib-users' ); ?><input name="package_id" value="<?php echo esc_attr( (string) $new_subscription_values['package_id'] ); ?>" pattern="[a-z0-9][a-z0-9._-]{2,189}" placeholder="my.subscription" required></label><?php endif; ?>
 						<label><?php esc_html_e( 'Title', 'neonlib-users' ); ?><input name="title" value="<?php echo esc_attr( (string) $new_subscription_values['title'] ); ?>" maxlength="190" required></label>
 						<label class="neonlib-form-wide"><?php esc_html_e( 'Description', 'neonlib-users' ); ?><textarea name="description" maxlength="10000"><?php echo esc_textarea( (string) $new_subscription_values['description'] ); ?></textarea></label>
 						<label><?php esc_html_e( 'Language', 'neonlib-users' ); ?><input name="language" value="<?php echo esc_attr( (string) $new_subscription_values['language'] ); ?>" maxlength="20" required></label>
 						<label><?php esc_html_e( 'Visibility', 'neonlib-users' ); ?><select name="visibility"><option value="private" <?php selected( 'private', $new_subscription_values['visibility'] ); ?>>private</option><option value="public" <?php selected( 'public', $new_subscription_values['visibility'] ); ?>>public</option></select></label>
-						<div class="neonlib-form-wide neonlib-create-documents">
+						<?php if ( $mobile_transfer_id ) : ?>
+                            <div class="neonlib-form-wide"><h4><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Received documents', 'Primljeni dokumenti' ) ); ?></h4><ul>
+                            <?php foreach ( (array) json_decode( $new_subscription_values['documents_json'], true ) as $document ) : ?><li><?php echo esc_html( (string) ( $document['title'] ?? '' ) ); ?></li><?php endforeach; ?>
+                            </ul></div>
+                            <details class="neonlib-form-wide"><summary><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Review or edit document text', 'Pregledaj ili uredi tekst dokumenata' ) ); ?></summary>
+                        <?php endif; ?><div class="neonlib-form-wide neonlib-create-documents">
 							<div class="neonlib-document-toolbar"><div><h4><?php esc_html_e( 'Documents', 'neonlib-users' ); ?></h4><p><?php esc_html_e( 'Add text manually or import TXT, Markdown, HTML and CSV files. Arrange the order before submitting for administrator review.', 'neonlib-users' ); ?></p></div><div><label class="neonlib-file-button"><?php esc_html_e( 'Import files', 'neonlib-users' ); ?><input class="neonlib-document-files" type="file" multiple accept=".txt,.md,.markdown,.html,.htm,.csv,text/plain,text/markdown,text/html,text/csv"></label><button class="neonlib-add-document" type="button"><?php esc_html_e( 'Add document', 'neonlib-users' ); ?></button></div></div>
 							<div class="neonlib-document-builder"></div>
 							<details class="neonlib-raw-json"><summary><?php esc_html_e( 'Advanced: raw JSON', 'neonlib-users' ); ?></summary><label><?php esc_html_e( 'Documents (JSON)', 'neonlib-users' ); ?><textarea class="neonlib-documents-json" name="documents_json" rows="8" required><?php echo esc_textarea( (string) $new_subscription_values['documents_json'] ); ?></textarea></label></details>
 						</div>
-						<div class="neonlib-form-actions"><p class="neonlib-json-status" aria-live="polite"></p><button type="submit"><?php esc_html_e( 'Create and submit for review', 'neonlib-users' ); ?></button></div>
+						<?php if ( $mobile_transfer_id ) : ?></details><?php endif; ?><div class="neonlib-form-actions"><p class="neonlib-json-status" aria-live="polite"></p><?php if ( $mobile_transfer_id ) : ?><button type="submit" name="neonlib_action" value="save_mobile_draft" class="neonlib-button--secondary"><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Save draft', 'Spremi nacrt' ) ); ?></button><?php endif; ?><button type="submit"><?php echo esc_html( $mobile_transfer_id ? NeonLib_Mobile_Transfer::text( 'Submit for review', 'Pošalji na pregled' ) : __( 'Create and submit for review', 'neonlib-users' ) ); ?></button></div>
 					</form>
 					<?php endif; ?>
 				</section>
@@ -584,6 +634,20 @@ final class NeonLib_Users {
 		$this->redirect_profile_status( 'updated' );
 	}
 
+	public static function subscription_status_label( array $subscription, array|WP_Error $versions ): string {
+		$status = strtolower( (string) ( $subscription['status'] ?? '' ) );
+		if ( 'archived' !== $status && ! is_wp_error( $versions ) ) {
+			foreach ( $versions as $version ) {
+				if ( strtolower( (string) ( $version['status'] ?? '' ) ) === 'draft' ) return NeonLib_Mobile_Transfer::text( 'Review', 'Na pregledu' );
+			}
+		}
+		return match ( $status ) {
+			'draft' => NeonLib_Mobile_Transfer::text( 'Draft', 'Nacrt' ),
+			'published' => NeonLib_Mobile_Transfer::text( 'Published', 'Objavljeno' ),
+			'archived' => NeonLib_Mobile_Transfer::text( 'Archived', 'Arhivirano' ),
+			default => (string) ( $subscription['status_label'] ?? $subscription['status'] ?? '' ),
+		};
+	}
 	public function handle_subscription_action(): void {
 		if ( 'POST' !== strtoupper( (string) ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) ) {
 			return;
@@ -636,6 +700,9 @@ final class NeonLib_Users {
 				$this->redirect_subscription_status( 'invalid_json' );
 			}
 			$result = $client->publish_version( $user_id, $package_id, $documents );
+			if ( ! is_wp_error( $result ) ) {
+				$this->notify_subscription_review( $user_id, $package_id, $result );
+			}
 			$this->redirect_subscription_status( is_wp_error( $result ) ? 'api_error' : 'published' );
 		}
 
@@ -672,11 +739,38 @@ final class NeonLib_Users {
 				set_transient( 'neonlib_documents_form_' . $user_id . '_' . md5( $package_id ), $documents_json, 5 * MINUTE_IN_SECONDS );
 				$this->redirect_subscription_status( 'created_publish_failed', 'publish', array( 'package_id' => $package_id ) );
 			}
+			$this->notify_subscription_review( $user_id, $package_id, $publish_result, $payload['title'] );
 			$this->redirect_subscription_status( 'created_and_published' );
 		}
 
 		$result = $client->update_subscription( $user_id, $package_id, $payload );
 		$this->redirect_subscription_status( is_wp_error( $result ) ? 'api_error' : 'updated' );
+	}
+
+	public function notify_subscription_review( int $user_id, string $package_id, array $result, string $title = '' ): void {
+		$user = get_user_by( 'id', $user_id );
+		$version = (int) ( $result['data']['version'] ?? 0 );
+		if ( '' === $title ) {
+			$subscriptions = ( new NeonLib_Api_Client() )->subscriptions( $user_id );
+			if ( ! is_wp_error( $subscriptions ) ) {
+				foreach ( $subscriptions as $subscription ) {
+					if ( ( $subscription['package_id'] ?? '' ) === $package_id ) {
+						$title = (string) ( $subscription['title'] ?? '' );
+						break;
+					}
+				}
+			}
+		}
+		$link = add_query_arg( array( 'page' => 'neonlib-admin', 'tab' => 'subscriptions', 'review_package' => $package_id ), admin_url( 'admin.php' ) );
+		$body = "Zbirka je predana na administratorski pregled. Nije još objavljena.\n\n"
+			. 'Naziv: ' . ( $title ?: $package_id ) . "\nPackage ID: {$package_id}\n"
+			. 'Verzija: ' . ( $version ?: '—' ) . "\nKorisnički ID: {$user_id}\n"
+			. 'E-mail izdavača: ' . ( $user instanceof WP_User ? $user->user_email : '—' )
+			. "\n\nPregled zbirke:\n{$link}\n";
+		if ( ! wp_mail( get_option( 'admin_email' ), 'NeonLib — zbirka čeka pregled', $body ) ) {
+			// The saved submission remains available for review even if email fails.
+			error_log( 'NeonLib: administrator review email failed for ' . $package_id . ' version ' . $version );
+		}
 	}
 
 	private function subscription_notice(): string {
@@ -854,6 +948,18 @@ final class NeonLib_Users {
 			return $requested_redirect_to;
 		}
 		if ( $user instanceof WP_User && $user->has_cap( self::CAP_ACCESS ) && ! $user->has_cap( 'manage_options' ) ) {
+			$account = wp_parse_url( $this->account_url() );
+			if ( is_array( $target ) && is_array( $account )
+				&& ( $target['host'] ?? '' ) === ( $account['host'] ?? '' )
+				&& ( $target['scheme'] ?? '' ) === ( $account['scheme'] ?? '' )
+				&& ( $target['port'] ?? null ) === ( $account['port'] ?? null )
+				&& ( $target['path'] ?? '' ) === ( $account['path'] ?? '' )
+				&& ! isset( $target['user'] ) && ! isset( $target['pass'] ) ) {
+				parse_str( $target['query'] ?? '', $query );
+				if ( is_string( $query['mobile_transfer'] ?? null ) && preg_match( '/^[a-f0-9]{32}$/', $query['mobile_transfer'] ) ) {
+					return add_query_arg( array( 'neonlib_view' => 'new-subscription', 'mobile_transfer' => $query['mobile_transfer'] ), $this->account_url() );
+				}
+			}
 			return $this->account_url();
 		}
 

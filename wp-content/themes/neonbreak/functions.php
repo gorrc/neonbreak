@@ -44,6 +44,7 @@ function neonbreak_meta() {
 add_action( 'wp_head', 'neonbreak_meta', 2 );
 
 function neonbreak_login_branding() {
+    wp_enqueue_style( 'neonbreak-password-recovery', get_template_directory_uri() . '/password-recovery.css', array( 'login' ), (string) filemtime( get_template_directory() . '/password-recovery.css' ) );
     echo '<style>body.login{background:#07080d;color:#f5f7fb;font-family:Inter,"Segoe UI",sans-serif}body.login:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 80% 0%,rgba(165,108,255,.15),transparent 35rem)}#login h1 a{width:82px;height:82px;background-image:url(' . esc_url( get_template_directory_uri() . '/assets/images/neonbreak-mark.svg' ) . ');background-size:contain}.login form{border:1px solid rgba(114,241,255,.22);border-radius:18px;background:#0d111a;box-shadow:0 25px 80px rgba(0,0,0,.35)}.login label{color:#cbd2de}.login input{border-color:#364052!important;background:#080b11!important;color:#fff!important}.login .button-primary{border:0;border-radius:999px;background:#72f1ff;color:#061014;font-weight:700}.login #nav a,.login #backtoblog a,.login .privacy-policy-page-link a{color:#929caf}#login_error,.login .message,.login .success{border-left:3px solid #ff5d7d!important;border-radius:10px!important;background:#111722!important;color:#f5f7fb!important;box-shadow:0 16px 45px rgba(0,0,0,.28)!important}#login_error a,.login .message a,.login .success a{color:#72f1ff!important}body.login{background:#07080d!important;color:#f5f7fb!important}#login #loginform{border:1px solid rgba(114,241,255,.22)!important;border-radius:18px!important;background:#0d111a!important;box-shadow:0 25px 80px rgba(0,0,0,.45)!important}#login #loginform label,#login #loginform .forgetmenot label{color:#e1e6ee!important}#login #loginform .input,#login #loginform input[type=text],#login #loginform input[type=password]{border-color:#364052!important;background:#080b11!important;color:#fff!important;box-shadow:none!important}#login #loginform input[type=checkbox]{border-color:#465268!important;background:#080b11!important}#login #loginform .wp-hide-pw{border:0!important;background:transparent!important;color:#72f1ff!important;box-shadow:none!important}#login #loginform .button-primary{border:0!important;background:#72f1ff!important;color:#061014!important;text-shadow:none!important}#login #loginform .button-primary:hover{background:#a7f7ff!important}</style>';
 }
 add_action( 'login_enqueue_scripts', 'neonbreak_login_branding' );
@@ -65,8 +66,18 @@ function neonbreak_site_icon_fallback() {
 }
 add_action( 'wp_head', 'neonbreak_site_icon_fallback', 5 );
 
+function neonbreak_contact_redirect_url( $language ) {
+    $url = home_url( '/contact/' );
+    if ( ! is_string( $language ) || ! class_exists( 'TRP_Translate_Press' ) ) return $url;
+    $trp = TRP_Translate_Press::get_trp_instance();
+    $settings = $trp->get_component( 'settings' )->get_settings();
+    if ( ! in_array( $language, $settings['translation-languages'] ?? array(), true ) ) return $url;
+    return $trp->get_component( 'url_converter' )->get_url_for_language( $language, $url, '' );
+}
+
 function neonbreak_handle_contact_form() {
-    $redirect = home_url( '/contact/' );
+    $language = isset( $_POST['neonbreak_contact_language'] ) && is_string( $_POST['neonbreak_contact_language'] ) ? sanitize_text_field( wp_unslash( $_POST['neonbreak_contact_language'] ) ) : '';
+    $redirect = neonbreak_contact_redirect_url( $language );
     if ( ! isset( $_POST['neonbreak_contact_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['neonbreak_contact_nonce'] ) ), 'neonbreak_contact' ) ) {
         wp_safe_redirect( add_query_arg( 'contact', 'invalid', $redirect ) ); exit;
     }

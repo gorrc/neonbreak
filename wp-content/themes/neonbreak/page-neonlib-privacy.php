@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || exit;
 get_header(); ?>
 <section class="content-page legal-page"><div class="nb-wrap">
 <p class="eyebrow">NeonLib · Legal</p><h1>NeonLib Privacy Policy</h1>
-<p class="legal-updated">Last updated: September 26, 2026</p>
+<p class="legal-updated">Last updated: October 14, 2026</p>
 <article class="legal-copy">
 <h2>1. Who operates NeonLib</h2>
 <p>NeonLib is an Android application provided by Web Solutions, obrt za informatičke usluge, vl. Goran Sambolić, operating under the Neon Break brand, Varaždinska ulica 11, Zlatar, Croatia. Croatian Craft Register: MBO 99052687. Contact for privacy questions and requests: <a href="mailto:info@neonbreak.com">info@neonbreak.com</a>.</p>
@@ -14,7 +14,9 @@ get_header(); ?>
 <p>Android backup and device-transfer services may copy eligible app data according to your device settings. Local storage does not exclude operating-system backups. Exported files and backups are managed separately from the app.</p>
 <h2>3. Optional online AI</h2>
 <p>If you configure and use an online AI provider, your question and relevant document passages are sent directly to that provider. Chat requests may also include conversation history. Your API key is used to authenticate requests to your selected provider and is stored by the app using Android Keystore-backed encryption.</p>
-<p>The provider you choose may process data outside the European Economic Area and has its own privacy, retention and contractual terms. Review those terms before using online AI with personal or confidential information. You can choose local AI instead.</p>
+<p>The provider you choose may process data outside the European Economic Area and has its own privacy, retention and contractual terms. Review those terms before using online AI with personal or confidential information. You can use local search without enabling online AI.</p>
+<p>If you choose NeonLib AI, you connect this phone to a verified NeonLib account. Your question, selected document passages, relevant chat history or text submitted for OCR correction are sent through the NeonLib API to Groq to generate the requested response. This option is separate from using your own provider and API key.</p>
+<p>The NeonLib AI service stores account and device identifiers, connection expiry times and usage counters to authenticate devices, enforce quotas and control spending. Its application storage does not retain the text of questions or responses. Groq processes the submitted content under its own privacy and service terms; this statement does not promise that Groq retains no data. You can disconnect this phone in the AI settings or use your own provider. Connection tokens are stored using Android Keystore-backed encryption and are excluded from app settings backups and device transfers.</p>
 <h2>4. Collections and downloads</h2>
 <p>Our API receives requests for the collection catalogue, documents, updates and availability, including the requested collection identifiers. Model downloads connect to Hugging Face and its download infrastructure. These network services receive your IP address and technical request information needed to deliver their services.</p>
 <h2>5. Reports and moderation</h2>

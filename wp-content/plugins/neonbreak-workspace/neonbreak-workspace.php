@@ -5,6 +5,7 @@
  * Version: 0.1.0
  */
 defined('ABSPATH') || exit;
+require_once __DIR__ . '/customer-navigation.php';
 require_once __DIR__ . '/advanced-chat.php';
 require_once __DIR__ . '/chat-backup.php';
 require_once __DIR__ . '/ai-search.php';
@@ -40,6 +41,6 @@ add_action('wp_enqueue_scripts', function () {
     foreach (['neonbreak', 'neonbreak-fonts', 'nb-chat-offer'] as $handle) wp_dequeue_style($handle);
     foreach (['neonbreak', 'neonbreak-language', 'neonbreak-chat'] as $handle) wp_dequeue_script($handle);
     Neonbreak_Client_Panel::assets();
-    wp_enqueue_style('nb-workspace', plugins_url('workspace.css', __FILE__), ['nb-client-panel'], '0.2.1');
+    wp_enqueue_style('nb-workspace', plugins_url('workspace.css', __FILE__), ['nb-client-panel'], '0.2.2');
 }, 100);
 

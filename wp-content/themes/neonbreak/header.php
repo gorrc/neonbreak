@@ -38,6 +38,7 @@ $nav_current = function ($slug) {
           <a href="<?php echo esc_url( home_url( '/services/cloud-infrastructure/' ) ); ?>"<?php echo $nav_current( 'cloud-infrastructure' ); ?>><span>04</span>Cloud Infrastructure</a>
         </div>
       </div>
+      <a class="nav-product" href="<?php echo esc_url( home_url( '/ai-chat/' ) ); ?>"<?php echo $nav_current( 'ai-chat' ); ?>><small>Product</small>AI Chat</a>
       <a class="nav-product" href="<?php echo esc_url( home_url( '/neonlib/' ) ); ?>"<?php echo $nav_current( 'neonlib' ); ?>><small>Product</small>NeonLib</a>
       <a class="nav-product" href="<?php echo esc_url( home_url( '/natdian/' ) ); ?>"<?php echo $nav_current( 'natdian' ); ?>><small>Product</small>Natdian</a>
       <a class="nav-cta" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"<?php echo $nav_current( 'contact' ); ?>>Contact</a>

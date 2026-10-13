@@ -11,7 +11,9 @@ final class NeonLib_Admin {
 		return self::$instance ??= new self();
 	}
 
-	private function __construct() {
+    private function __construct() {
+        add_action( 'admin_post_neonlib_admin_vectors', array( $this, 'handle_vectors' ) );
+        add_action( 'admin_post_neonlib_admin_edit', array( $this, 'handle_edit' ) );
 		add_action( 'admin_post_neonlib_admin_report_update', array( $this, 'handle_report_update' ) );
 		add_action( 'admin_post_neonlib_admin_bulk_delete', array( $this, 'handle_bulk_delete' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
@@ -25,7 +27,7 @@ final class NeonLib_Admin {
 		add_menu_page( __( 'NeonLib', 'neonlib-admin' ), __( 'NeonLib', 'neonlib-admin' ), self::CAPABILITY, self::PAGE, array( $this, 'render_page' ), 'dashicons-book-alt', 58 );
 	}
 
-	public function enqueue_assets( string $hook ): void {
+	public function enqueue_assets( ?string $hook ): void {
 		if ( 'toplevel_page_' . self::PAGE !== $hook ) return;
 		wp_enqueue_style( 'neonlib-admin', NEONLIB_ADMIN_URL . 'assets/admin.css', array(), NEONLIB_ADMIN_VERSION );
 	}
@@ -74,6 +76,10 @@ final class NeonLib_Admin {
 	}
 
 	private function render_subscriptions(): void {
+        if ( isset( $_GET['edit_package'] ) ) {
+            $this->render_editor( sanitize_text_field( wp_unslash( $_GET['edit_package'] ) ) );
+            return;
+        }
         if ( isset( $_GET['review_package'] ) ) {
             $this->render_review( sanitize_text_field( wp_unslash( $_GET['review_package'] ) ) );
             return;
@@ -95,7 +101,7 @@ final class NeonLib_Admin {
 		<?php if ( ! $rows ) : ?><tr><td colspan="5"><?php esc_html_e( 'Nema rezultata.', 'neonlib-admin' ); ?></td></tr><?php endif; ?>
 		<?php foreach ( $rows as $row ) : ?><tr><td><input type="checkbox" class="neonlib-delete-item" form="neonlib-bulk-delete" name="package_ids[]" value="<?php echo esc_attr( $row['package_id'] ); ?>" aria-label="<?php echo esc_attr( 'Select ' . $row['title'] ); ?>" onchange="const all = document.getElementById('neonlib-select-all'); const items = Array.from(document.querySelectorAll('.neonlib-delete-item')); all.checked = items.every(item => item.checked); all.indeterminate = items.some(item => item.checked) &amp;&amp; !all.checked;"></td><td><code><?php echo esc_html( (string) $row['package_id'] ); ?></code></td><td><code><?php echo esc_html( (string) ( $row['account_id'] ?? 'legacy' ) ); ?></code></td><td><?php echo esc_html( (string) $row['title'] ); ?></td><td><p><strong><?php echo esc_html( (string) $row['status'] ); ?></strong>
             · <?php echo esc_html( sprintf( 'Pending versions: %d', (int) ( $row['pending_count'] ?? 0 ) ) ); ?></p>
-            <p><a class="button button-primary" href="<?php echo esc_url( add_query_arg( array( 'page' => self::PAGE, 'tab' => 'subscriptions', 'review_package' => $row['package_id'] ), admin_url( 'admin.php' ) ) ); ?>">Review documents</a></p>
+            <p><a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => self::PAGE, 'tab' => 'subscriptions', 'edit_package' => $row['package_id'] ), admin_url( 'admin.php' ) ) ); ?>">Edit collection</a> <a class="button button-primary" href="<?php echo esc_url( add_query_arg( array( 'page' => self::PAGE, 'tab' => 'subscriptions', 'review_package' => $row['package_id'] ), admin_url( 'admin.php' ) ) ); ?>">Review documents</a></p>
             <p>Status stays unchanged unless you choose an action. Publishing requires document review. Changing visibility requires a new review.</p><form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"><?php wp_nonce_field( 'neonlib_admin_subscription_update' ); ?><input type="hidden" name="action" value="neonlib_admin_subscription_update"><input type="hidden" name="package_id" value="<?php echo esc_attr( (string) $row['package_id'] ); ?>"><select name="status" aria-label="Status action"><option value="">Keep status: <?php echo esc_html( $row['status'] ); ?></option><option value="draft">Send back to Draft</option><option value="archived">Archive</option></select><select name="visibility" aria-label="Visibility action"><option value="">Keep visibility: <?php echo esc_html( $row['visibility'] ); ?></option><option value="private">Change to private (requires review)</option><option value="public">Change to public (requires review)</option></select><label><input type="checkbox" name="is_featured" value="1" <?php checked( ! empty( $row['is_featured'] ) ); ?>> featured</label> <button class="button button-primary"><?php esc_html_e( 'Save', 'neonlib-admin' ); ?></button></form></td></tr><?php endforeach; ?></tbody></table>
 		<?php
 	}
@@ -152,6 +158,106 @@ final class NeonLib_Admin {
         $this->redirect( 'reports', is_wp_error( $result ) ? 'error' : 'updated' );
     }
 
+    private function render_editor( string $package_id, ?array $submitted = null, string $error = '' ): void {
+        $result = ( new NeonLib_Admin_Api_Client() )->subscription( $package_id );
+        if ( is_wp_error( $result ) ) { $this->render_api_error( $result ); return; }
+        $editor = $result['data']['editor'] ?? null;
+        if ( ! is_array( $editor ) ) { echo '<p>Update the NeonLib API before using the editor.</p>'; return; }
+        $meta = $submitted ?? $editor['metadata'];
+        $documents = $submitted['documents'] ?? $editor['review']['documents'] ?? array();
+        if ( $error ) echo '<div class="notice notice-error"><p>' . esc_html( $error ) . '</p></div>';
+        ?>
+        <h2>Edit collection: <?php echo esc_html( $package_id ); ?></h2>
+        <p><a href="<?php echo esc_url( add_query_arg( array( 'page'=>self::PAGE, 'tab'=>'subscriptions' ), admin_url('admin.php') ) ); ?>">Back to subscriptions</a></p>
+        <p>Saving creates a new draft version and requires a fresh review before publication. The collection will be unavailable until approved. Archived collections stay archived. Package ID and publisher do not change.</p>
+        <form id="neonlib-editor" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <?php wp_nonce_field('neonlib_admin_edit'); ?>
+            <input type="hidden" name="action" value="neonlib_admin_edit">
+            <input type="hidden" name="package_id" value="<?php echo esc_attr($package_id); ?>">
+            <input type="hidden" name="edit_token" value="<?php echo esc_attr($submitted['edit_token'] ?? $editor['edit_token']); ?>">
+            <input type="hidden" name="documents_json" id="neonlib-editor-json" value="">
+            <p><label>Title<br><input name="title" class="large-text" maxlength="190" required value="<?php echo esc_attr($meta['title']); ?>"></label></p>
+            <p><label>Description<br><textarea name="description" class="large-text" rows="4" maxlength="10000"><?php echo esc_textarea($meta['description']); ?></textarea></label></p>
+            <p><label>Language <input name="language" required pattern="[a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,8})*" value="<?php echo esc_attr($meta['language']); ?>"></label>
+            <label>Visibility <select name="visibility"><option value="public" <?php selected(strtolower($meta['visibility']), 'public'); ?>>Public</option><option value="private" <?php selected(strtolower($meta['visibility']), 'private'); ?>>Private</option></select></label></p>
+            <h3>Articles</h3>
+            <div id="neonlib-editor-documents">
+            <?php foreach ( $documents as $document ) : ?>
+                <fieldset class="neonlib-admin-card" data-document>
+                    <p><label>Article ID <input data-field="id" required pattern="[a-z0-9][a-z0-9._-]{0,188}" value="<?php echo esc_attr($document['id']); ?>"></label></p>
+                    <p><label>Title<input data-field="title" class="large-text" required maxlength="255" value="<?php echo esc_attr($document['title']); ?>"></label></p>
+                    <p><label>Full text<textarea data-field="content" class="large-text" rows="10"><?php echo esc_textarea($document['content']); ?></textarea></label></p>
+                    <button type="button" class="button" data-remove>Remove article from this draft</button>
+                </fieldset>
+            <?php endforeach; ?>
+            </div>
+            <p><button type="button" class="button" id="neonlib-add-document">Add article</button></p>
+            <p id="neonlib-editor-error" role="alert"></p>
+            <noscript><p>Enable JavaScript to edit articles.</p></noscript>
+            <button class="button button-primary" id="neonlib-save-editor" disabled>Save draft for review</button>
+        </form>
+        <template id="neonlib-document-template"><fieldset class="neonlib-admin-card" data-document>
+            <p><label>Article ID <input data-field="id" required pattern="[a-z0-9][a-z0-9._-]{0,188}"></label></p>
+            <p><label>Title<input data-field="title" class="large-text" required maxlength="255"></label></p>
+            <p><label>Full text<textarea data-field="content" class="large-text" rows="10"></textarea></label></p>
+            <button type="button" class="button" data-remove>Remove article from this draft</button>
+        </fieldset></template>
+        <script>
+        (() => {
+            const form = document.getElementById('neonlib-editor');
+            const list = document.getElementById('neonlib-editor-documents');
+            document.getElementById('neonlib-save-editor').disabled = false;
+            list.addEventListener('click', event => {
+                if (event.target.matches('[data-remove]')) event.target.closest('[data-document]').remove();
+            });
+            document.getElementById('neonlib-add-document').addEventListener('click', () => {
+                list.appendChild(document.getElementById('neonlib-document-template').content.cloneNode(true));
+            });
+            form.addEventListener('submit', event => {
+                const documents = Array.from(list.querySelectorAll('[data-document]'), card => Object.fromEntries(
+                    ['id','title','content'].map(key => [key, card.querySelector('[data-field="'+key+'"]').value])
+                ));
+                if (!documents.length || documents.length > 500 || new Set(documents.map(d => d.id)).size !== documents.length) {
+                    event.preventDefault();
+                    document.getElementById('neonlib-editor-error').textContent = 'Provide 1–500 articles with unique IDs.';
+                    return;
+                }
+                document.getElementById('neonlib-editor-json').value = JSON.stringify(documents);
+            });
+        })();
+        </script>
+        <?php
+    }
+
+    public function handle_edit(): void {
+        $this->authorize_action('neonlib_admin_edit');
+        $package = sanitize_text_field(wp_unslash($_POST['package_id'] ?? ''));
+        if (!preg_match('/^[a-z0-9][a-z0-9._-]{2,189}$/', $package)) $this->redirect('subscriptions', 'invalid');
+        $input = array();
+        foreach (array('edit_token','title','description','language','visibility') as $field) {
+            if (!isset($_POST[$field]) || !is_string($_POST[$field])) $this->redirect('subscriptions','invalid');
+            $input[$field] = wp_unslash($_POST[$field]);
+        }
+        if (!isset($_POST['documents_json']) || !is_string($_POST['documents_json'])) $this->redirect('subscriptions','invalid');
+        $input['documents'] = json_decode(wp_unslash($_POST['documents_json']), true);
+        if (!is_array($input['documents']) || !array_is_list($input['documents'])) $this->redirect('subscriptions','invalid');
+        foreach ($input['documents'] as $document) {
+            if (!is_array($document) || !is_string($document['id'] ?? null) || !is_string($document['title'] ?? null) || !is_string($document['content'] ?? null)) $this->redirect('subscriptions','invalid');
+        }
+        $result = (new NeonLib_Admin_Api_Client())->update_subscription($package, array('edit'=>$input));
+        if (is_wp_error($result)) {
+            // Retain input on failure, including the original token: stale content must not silently overwrite a newer version.
+            require_once ABSPATH . 'wp-admin/admin-header.php';
+            echo '<div class="wrap neonlib-admin">';
+            $this->render_editor($package, $input, $result->get_error_message());
+            echo '</div>';
+            require_once ABSPATH . 'wp-admin/admin-footer.php';
+            exit;
+        }
+        wp_safe_redirect(add_query_arg(array('page'=>self::PAGE,'tab'=>'subscriptions','review_package'=>$package,'neonlib_admin_status'=>'updated'),admin_url('admin.php')));
+        exit;
+    }
+
 	private function render_review( string $package_id ): void {
         $result = ( new NeonLib_Admin_Api_Client() )->subscription( $package_id );
         if ( is_wp_error( $result ) ) { $this->render_api_error( $result ); return; }
@@ -163,10 +269,21 @@ final class NeonLib_Admin {
         echo '<p>' . esc_html( 'Publisher: ' . $meta['publisher_name'] . ' | Language: ' . $meta['language'] . ' | Visibility: ' . $meta['visibility'] . ' | Status: ' . $meta['status'] ) . '</p>';
         echo '<p>' . nl2br( esc_html( (string) $meta['description'] ) ) . '</p>';
         echo '<h3>' . esc_html( 'Version ' . $review['version']['version_number'] ) . '</h3>';
+        $this->render_vectors($package_id, (int)$review['version']['version_number'], $review['version']['status'] ?? '');
         foreach ( $review['documents'] as $document ) {
             echo '<section class="neonlib-admin-card"><h3>' . esc_html( (string) $document['title'] ) . '</h3><p><code>' . esc_html( (string) $document['id'] ) . '</code></p><pre style="white-space:pre-wrap;overflow-wrap:anywhere">' . esc_html( (string) $document['content'] ) . '</pre></section>';
         }
-        if ( 'ARCHIVED' === $meta['status'] ) { echo '<p>This subscription is archived. Move it to Draft before reviewing it for publication.</p>'; return; }
+        if ( 'ARCHIVED' === $meta['status'] ) {
+            echo '<p>This subscription is archived. Restore it to Draft, then review and approve it.</p>';
+            ?><form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <?php wp_nonce_field('neonlib_admin_subscription_update'); ?>
+                <input type="hidden" name="action" value="neonlib_admin_subscription_update">
+                <input type="hidden" name="package_id" value="<?php echo esc_attr($package_id); ?>">
+                <input type="hidden" name="status" value="draft">
+                <?php if (!empty($result['data']['is_featured'])) : ?><input type="hidden" name="is_featured" value="1"><?php endif; ?>
+                <button class="button button-primary">Restore to Draft</button>
+            </form><?php return;
+        }
         ?>
         <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
             <?php wp_nonce_field( 'neonlib_admin_approve' ); ?>
@@ -178,6 +295,51 @@ final class NeonLib_Admin {
             <button class="button button-primary">Approve reviewed version</button>
         </form>
         <?php
+    }
+
+    private function render_vectors(string $package, int $version, string $version_status): void {
+        $version_status=strtoupper(trim($version_status));
+        if ($version_status === '') {
+            echo '<div class="notice notice-error inline"><p>API nije vratio status verzije. Ažuriraj src/SubscriptionReview.php na API serveru. Ponovno spremanje zbirke neće riješiti ovaj problem.</p></div>';
+            return;
+        }
+        echo '<p>Status verzije: <strong>'.esc_html($version_status).'</strong></p>';
+        if ($version_status !== 'DRAFT') {
+            echo '<p>Za pripremu vektora napravi novu verziju kroz Edit collection → Save draft for review.</p>';
+            return;
+        }
+        $result=(new NeonLib_Admin_Api_Client())->vector_job($package,$version);
+        if(is_wp_error($result)) { $this->render_api_error($result); return; }
+        $job=$result['data']??null;
+        $state=$job['status']??'';
+        $labels=array('QUEUED'=>'Čeka računalo','RUNNING'=>'Priprema vektora','DONE'=>'Vektori spremni','FAILED'=>'Obrada nije uspjela');
+        echo '<section class="neonlib-admin-card"><h3>Priprema za brže preuzimanje</h3>';
+        echo '<p>Vektori se računaju na povezanom računalu. Ono mora biti uključeno s pokrenutom obradom.</p>';
+        if($state) echo '<p role="status"><strong>'.esc_html($labels[$state]??$state).'</strong> '.esc_html($state==='RUNNING' ? sprintf('%d / %d dokumenata',(int)$job['progress'],(int)$job['total']) : '').'</p>';
+        if($state==='FAILED')echo '<p>'.esc_html($job['error']??'Pokušaj ponovno.').'</p>';
+        if(in_array($state,array('QUEUED','RUNNING'),true)) {
+            echo '<p>Pričekaj da vektori budu spremni prije odobravanja ove verzije.</p><button class="button" type="button" onclick="location.reload()">Osvježi status</button>';
+            echo '<script>setTimeout(() => {if(!document.hidden && !document.querySelector(\'input[name="review_confirmed"]:checked\')) location.reload();}, 15000);</script>';
+        } else {
+            ?><form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <?php wp_nonce_field('neonlib_admin_vectors'); ?>
+                <input type="hidden" name="action" value="neonlib_admin_vectors">
+                <input type="hidden" name="package_id" value="<?php echo esc_attr($package); ?>">
+                <input type="hidden" name="version" value="<?php echo esc_attr((string)$version); ?>">
+                <button class="button button-primary"><?php echo esc_html($state==='DONE'?'Ponovno pripremi vektore':'Pripremi vektore'); ?></button>
+            </form><?php
+        }
+        echo '</section>';
+    }
+
+    public function handle_vectors(): void {
+        $this->authorize_action('neonlib_admin_vectors');
+        $package=sanitize_text_field(wp_unslash($_POST['package_id']??''));
+        $version=absint($_POST['version']??0);
+        if(!preg_match('/^[a-z0-9][a-z0-9._-]{1,189}$/',$package)||!$version)$this->redirect('subscriptions','invalid');
+        $result=(new NeonLib_Admin_Api_Client())->vector_job($package,$version,true);
+        wp_safe_redirect(add_query_arg(array('page'=>self::PAGE,'tab'=>'subscriptions','review_package'=>$package,'neonlib_admin_status'=>is_wp_error($result)?'error':'updated'),admin_url('admin.php')));
+        exit;
     }
 
     public function handle_approve(): void {

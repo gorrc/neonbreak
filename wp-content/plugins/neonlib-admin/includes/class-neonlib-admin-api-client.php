@@ -35,6 +35,10 @@ final class NeonLib_Admin_Api_Client {
 		return $this->request( 'GET', '/api/v1/admin/subscriptions/' . rawurlencode( $package_id ) );
 	}
 
+    public function vector_job( string $package, int $version, bool $start = false ): array|WP_Error {
+        return $this->request( $start ? 'POST' : 'GET', '/api/v1/admin/subscriptions/' . rawurlencode($package) . '/versions/' . $version . '/vector-job', $start ? array() : null );
+    }
+
 	public function update_subscription( string $package_id, array $changes ): array|WP_Error {
 		return $this->request( 'PATCH', '/api/v1/admin/subscriptions/' . rawurlencode( $package_id ), $changes );
 	}
