@@ -21,8 +21,8 @@ final class NeonLib_Managed_AI {
         if (!is_user_logged_in()) {
             get_header();
             $page=(int)get_option('neonlib_users_account_page_id');
-            $account=$page ? get_permalink($page) : home_url('/neonlib/');
-            echo '<main style="max-width:650px;margin:50px auto;padding:24px"><h1>NeonLib AI</h1><p>Sign in to connect your phone. If you do not have a NeonLib account, create one and verify your email first, then return to the app and connect again.</p><p><a class="button" href="'.esc_url(wp_login_url($url)).'">Sign in</a></p><p><a href="'.esc_url($account).'">Create a NeonLib account</a></p></main>';
+            $account=add_query_arg('neonlib_ai_connection',$id,$page ? get_permalink($page) : home_url('/neonlib/'));
+            echo '<main style="max-width:650px;margin:50px auto;padding:24px"><h1>NeonLib AI</h1><p>Sign in to connect your phone. If you do not have a NeonLib account, create one and verify your email first, you will then return here to connect your phone.</p><p><a class="button" href="'.esc_url(wp_login_url($url)).'">Sign in</a></p><p><a href="'.esc_url($account).'">Create a NeonLib account</a></p></main>';
             get_footer(); exit;
         }
         $user=wp_get_current_user();

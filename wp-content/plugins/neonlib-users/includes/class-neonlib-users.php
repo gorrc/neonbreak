@@ -9,6 +9,7 @@ final class NeonLib_Users {
 	private const META_EMAIL_VERIFIED = 'neonlib_email_verified';
 	private const META_VERIFY_TOKEN = 'neonlib_email_verify_token';
 	private const META_VERIFY_EXPIRES = 'neonlib_email_verify_expires';
+	private const META_AI_CONNECTION = 'neonlib_pending_ai_connection';
 	private const META_ACCOUNT_ID = 'neonlib_account_id';
 	private const META_PUBLISHER_NAME = 'neonlib_publisher_name';
 
@@ -129,6 +130,10 @@ final class NeonLib_Users {
 	private function render_authentication(): string {
 		$messages = $this->registration_messages();
 		$redirect = $this->account_url();
+		$ai_connection = $this->requested_ai_connection();
+		if ( '' !== $ai_connection ) {
+			$redirect = add_query_arg( 'neonlib_ai_connection', $ai_connection, $redirect );
+		}
 		$transfer = sanitize_text_field( wp_unslash( $_GET['mobile_transfer'] ?? '' ) );
 		if ( preg_match( '/^[a-f0-9]{32}$/', $transfer ) ) {
 			$redirect = add_query_arg( array( 'neonlib_view' => 'new-subscription', 'mobile_transfer' => $transfer ), $redirect );
@@ -142,7 +147,7 @@ final class NeonLib_Users {
 				<?php
 				wp_login_form(
 					array(
-						'redirect'       => $redirect,
+						'redirect'       => '' !== $ai_connection ? add_query_arg( 'neonlib_ai', $ai_connection, home_url( '/' ) ) : $redirect,
 						'label_username' => __( 'Username or email', 'neonlib-users' ),
 						'label_password' => __( 'Password', 'neonlib-users' ),
 						'label_log_in'   => __( 'Sign in', 'neonlib-users' ),
@@ -539,6 +544,10 @@ final class NeonLib_Users {
 			$this->redirect_with_status( 'registration_failed' );
 		}
 
+		$ai_connection = $this->requested_ai_connection();
+		if ( '' !== $ai_connection ) {
+			update_user_meta( $user_id, self::META_AI_CONNECTION, $ai_connection );
+		}
 		update_user_meta( $user_id, self::META_EMAIL_VERIFIED, '0' );
 		$this->send_verification_email( $user_id );
 
@@ -574,7 +583,18 @@ final class NeonLib_Users {
 		delete_user_meta( $user_id, self::META_VERIFY_EXPIRES );
 		$this->ensure_account_link( $user_id );
 
+		$ai_connection = (string) get_user_meta( $user_id, self::META_AI_CONNECTION, true );
+		delete_user_meta( $user_id, self::META_AI_CONNECTION );
+		if ( preg_match( '/^[a-f0-9]{32}$/D', $ai_connection ) ) {
+			wp_safe_redirect( add_query_arg( 'neonlib_ai', $ai_connection, home_url( '/' ) ) );
+			exit;
+		}
 		$this->redirect_verification_status( 'verified' );
+	}
+
+	private function requested_ai_connection(): string {
+		$id = wp_unslash( $_GET['neonlib_ai_connection'] ?? '' );
+		return is_string( $id ) && preg_match( '/^[a-f0-9]{32}$/D', $id ) ? $id : '';
 	}
 
 	public function handle_verification_resend(): void {

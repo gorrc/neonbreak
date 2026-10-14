@@ -23,5 +23,5 @@ $_GET=['neonlib_ai'=>$id];$_SERVER['REQUEST_METHOD']='GET';ob_start();try{NeonLi
 $GLOBALS['verified']='0';try{NeonLib_Managed_AI::page();}catch(Stop $e){check(str_contains($e->getMessage(),'Verify'));}check($GLOBALS['approved']===0);$GLOBALS['verified']='1';
 $_SERVER['REQUEST_METHOD']='POST';$_POST=['device_code'=>'ABC123'];$GLOBALS['nonce']=false;try{NeonLib_Managed_AI::page();}catch(Stop $e){check($e->getMessage()==='nonce');}check($GLOBALS['approved']===0);
 $GLOBALS['nonce']=true;ob_start();try{NeonLib_Managed_AI::page();}catch(Stop $e){check($e->getMessage()==='rendered');}$html=ob_get_clean();check($GLOBALS['approved']===1&&str_contains($html,'Return to NeonLib'));
-$GLOBALS['logged']=false;$_SERVER['REQUEST_METHOD']='GET';ob_start();try{NeonLib_Managed_AI::page();}catch(Stop $e){}$html=ob_get_clean();check(str_contains($html,'Create a NeonLib account')&&str_contains($html,'redirect_to'));
+$GLOBALS['logged']=false;$_SERVER['REQUEST_METHOD']='GET';ob_start();try{NeonLib_Managed_AI::page();}catch(Stop $e){}$html=ob_get_clean();check(str_contains($html,'Create a NeonLib account')&&str_contains($html,'redirect_to')&&str_contains($html,'neonlib_ai_connection='.$id));
 echo "$n WordPress assertions passed\n";
