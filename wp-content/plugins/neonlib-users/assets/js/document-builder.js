@@ -26,6 +26,14 @@
 		const fileInput = form.querySelector('.neonlib-document-files');
 		const addButton = form.querySelector('.neonlib-add-document');
 		let documents = [];
+		let jsonPending = false;
+		const processButton = form.querySelector('.neonlib-process-json');
+		const jsonFeedback = form.querySelector('.neonlib-json-feedback');
+		const setEditorDisabled = (disabled) => {
+			mount.querySelectorAll('input, textarea, button').forEach((control) => { control.disabled = disabled; });
+			addButton.disabled = disabled;
+			fileInput.disabled = disabled;
+		};
 
 		if (!textarea || !mount || !status || !fileInput || !addButton) {
 			return;
@@ -68,13 +76,17 @@
 				if (!Array.isArray(parsed)) {
 					throw new Error('Documents must be a list.');
 				}
-				documents = parsed.map((item, index) => ({
+				if (parsed.some((item) => !item || typeof item !== 'object' || Array.isArray(item))) throw new Error('Invalid document object');
+			documents = parsed.map((item, index) => ({
 					id: String(item.id || uniqueId(item.title || `document-${index + 1}`, index)),
 					title: String(item.title || ''),
 					content: String(item.content || ''),
 				}));
+				jsonPending = false;
 				render();
+				setEditorDisabled(false);
 				syncJson();
+				return true;
 			} catch (error) {
 				status.textContent = text('Invalid JSON. Fix it before publishing.', 'JSON nije valjan. Ispravite ga prije objave.');
 				status.classList.add('is-error');
@@ -129,8 +141,26 @@
 			syncJson();
 		});
 
-		textarea.addEventListener('change', loadJson);
+		textarea.addEventListener('input', () => {
+            jsonPending = true;
+            setEditorDisabled(true);
+            const message = text('Click Load documents from JSON to apply your changes before submitting.', 'Kliknite Učitaj dokumente iz JSON-a kako biste primijenili izmjene prije slanja.');
+            status.textContent = message;
+            if (jsonFeedback) jsonFeedback.textContent = message;
+        });
+        processButton?.addEventListener('click', () => {
+            if (loadJson()) {
+                const message = text(`${documents.length} documents loaded. Review them above before submitting. Nothing has been submitted yet.`, `Učitano dokumenata: ${documents.length}. Pregledajte ih iznad prije slanja. Još ništa nije poslano.`);
+                status.textContent = message;
+                if (jsonFeedback) jsonFeedback.textContent = message;
+            } else if (jsonFeedback) jsonFeedback.textContent = status.textContent;
+        });
 		form.addEventListener('submit', (event) => {
+			if (jsonPending) {
+				event.preventDefault();
+				processButton?.focus();
+				return;
+			}
 			syncJson();
 			if (documents.length === 0) {
 				event.preventDefault();

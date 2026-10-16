@@ -2,13 +2,19 @@
 /**
  * Plugin Name: Neonbreak AI Workspace
  * Description: Standalone customer workspace for Neonbreak AI tools.
- * Version: 0.1.0
+ * Version: 0.3.0
  */
 defined('ABSPATH') || exit;
 require_once __DIR__ . '/customer-navigation.php';
+require_once __DIR__ . '/account-limits.php';
 require_once __DIR__ . '/advanced-chat.php';
 require_once __DIR__ . '/chat-backup.php';
 require_once __DIR__ . '/ai-search.php';
+require_once __DIR__ . '/history-panel.php';
+require_once __DIR__ . '/business-assistant.php';
+require_once __DIR__ . '/history-expression.php';
+require_once __DIR__ . '/assistant-agent.php';
+require_once __DIR__ . '/platform-admin.php';
 function nb_workspace_install() {
     if (!get_page_by_path('workspace')) wp_insert_post(['post_title' => 'AI Workspace', 'post_name' => 'workspace', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '']);
 }
@@ -27,6 +33,7 @@ add_filter('login_redirect', function ($redirect, $requested, $user) {
 add_action('template_redirect', function () {
     if (!is_page('workspace')) return;
     nocache_headers();
+    if (is_user_logged_in() && !metadata_exists('user',get_current_user_id(),'_nb_workspace_member')) update_user_meta(get_current_user_id(),'_nb_workspace_member',time());
     if (isset($_GET['view']) && $_GET['view'] === 'connection') {
         wp_safe_redirect(add_query_arg('view', 'chat', home_url('/workspace/')) . '#nb-connection');
         exit;
@@ -41,6 +48,8 @@ add_action('wp_enqueue_scripts', function () {
     foreach (['neonbreak', 'neonbreak-fonts', 'nb-chat-offer'] as $handle) wp_dequeue_style($handle);
     foreach (['neonbreak', 'neonbreak-language', 'neonbreak-chat'] as $handle) wp_dequeue_script($handle);
     Neonbreak_Client_Panel::assets();
-    wp_enqueue_style('nb-workspace', plugins_url('workspace.css', __FILE__), ['nb-client-panel'], '0.2.2');
+    wp_enqueue_style('nb-workspace', plugins_url('workspace.css', __FILE__), ['nb-client-panel'], '0.3.6');
+    wp_enqueue_style('nb-workspace-design', plugins_url('workspace-design.css', __FILE__), ['nb-workspace'], '1.0.1');
+    wp_enqueue_script('nb-workspace-shell', plugins_url('workspace-shell.js', __FILE__), [], '1.0.0', true);
 }, 100);
 

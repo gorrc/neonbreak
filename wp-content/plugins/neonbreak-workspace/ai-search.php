@@ -34,18 +34,20 @@ final class NB_AI_Search {
         if ($ok === false) throw new RuntimeException('Quota storage failed.');
         return (int) $wpdb->get_var($wpdb->prepare("SELECT option_value FROM {$wpdb->options} WHERE option_name = %s", $name));
     }
+    public static function tracked($uid,$result) { do_action('nb_workspace_operation_result',$uid,'search',is_wp_error($result)?$result->get_error_code():'ok');return $result; }
     public static function search($uid, $query, $limit) {
-        if (!is_string($query) || !trim($query) || !mb_check_encoding($query, 'UTF-8') || mb_strlen($query) > 1500 || !is_int($limit) || $limit < 1 || $limit > 5) return new WP_Error('nb_search_input', 'Use a query of 1–1500 characters and an integer limit of 1–5.', ['status' => 400]);
-        if (!NB_Advanced_Chat::allowed($uid)) return new WP_Error('nb_search_access', 'Advanced access is not active.', ['status' => 403]);
-        if (!Neonbreak_Client_Service::settings($uid)['_api_key']) return new WP_Error('nb_search_setup', 'Save your Fireworks key in AI Chat first.', ['status' => 503]);
+        if (!is_string($query) || !trim($query) || !mb_check_encoding($query, 'UTF-8') || mb_strlen($query) > 1500 || !is_int($limit) || $limit < 1 || $limit > 5) return self::tracked($uid, new WP_Error('nb_search_input', 'Use a query of 1–1500 characters and an integer limit of 1–5.', ['status' => 400]));
+        if (!NB_Advanced_Chat::allowed($uid)) return self::tracked($uid, new WP_Error('nb_search_access', 'Advanced access is not active.', ['status' => 403]));
+        if (!Neonbreak_Client_Service::settings($uid)['_api_key']) return self::tracked($uid, new WP_Error('nb_search_setup', 'Save your Fireworks key in AI Chat first.', ['status' => 503]));
+        $limits=NB_Workspace_Limits::get($uid);
         try {
-            if (self::increment('nb_search_min_' . gmdate('YmdHi') . '_' . $uid) > self::MINUTE_LIMIT) return new WP_Error('nb_search_rate', 'Maximum 10 requests per minute.', ['status' => 429]);
+            if (self::increment('nb_search_min_' . gmdate('YmdHi') . '_' . $uid) > $limits['search_minute']) return self::tracked($uid, new WP_Error('nb_search_rate', sprintf(nb_url_text('Maximum %d requests per minute.','Najviše %d zahtjeva u minuti.'),$limits['search_minute']), ['status' => 429]));
             $count = self::increment(self::counter_name($uid));
-            if ($count > self::DAILY_LIMIT) return new WP_Error('nb_search_quota', 'Daily AI Search limit reached. Resets at 00:00 UTC.', ['status' => 429]);
+            if ($count > $limits['search_daily']) return self::tracked($uid, new WP_Error('nb_search_quota', 'Daily AI Search limit reached. Resets at 00:00 UTC.', ['status' => 429]));
             $found = NB_Advanced_Chat::retrieve($uid, sanitize_textarea_field($query), $limit);
             $results = array_map(function ($source) { return ['document_id' => $source['document_id'], 'document' => $source['title'], 'chunk' => $source['chunk'], 'text' => $source['text'], 'source_url' => $source['source_url'] ?: null, 'score' => $source['score']]; }, $found['sources']);
-            return ['query' => $query, 'results' => $results, 'usage' => ['requests_today' => $count, 'daily_limit' => self::DAILY_LIMIT, 'remaining' => max(0, self::DAILY_LIMIT - $count), 'reset_timezone' => 'UTC']];
-        } catch (Throwable $e) { return new WP_Error('nb_search_unavailable', 'Knowledge search is temporarily unavailable. Check your connections or contact support.', ['status' => 502]); }
+            return self::tracked($uid, ['query' => $query, 'results' => $results, 'usage' => ['requests_today' => $count, 'daily_limit' => $limits['search_daily'], 'minute_limit' => $limits['search_minute'], 'remaining' => max(0, $limits['search_daily'] - $count), 'reset_timezone' => 'UTC']]);
+        } catch (Throwable $e) { return self::tracked($uid, new WP_Error('nb_search_unavailable', 'Knowledge search is temporarily unavailable. Check your connections or contact support.', ['status' => 502])); }
     }
     public static function api($request) {
         $uid = self::identity($request);

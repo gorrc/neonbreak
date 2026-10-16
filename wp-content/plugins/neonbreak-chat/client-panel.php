@@ -8,7 +8,7 @@ final class Neonbreak_Client_Panel {
         wp_enqueue_script( 'nb-client-panel', plugins_url( 'panel.js', __FILE__ ), array(), '1.2', true );
     }
     public static function defaults() {
-        return array( 'title' => 'My assistant', 'accent' => '#72f1ff', 'launcher' => "Let's talk", 'welcome' => 'Hello! How can we help?', 'contact' => '', 'contact_label' => 'Contact our team', 'suggestions' => "What services do you offer?\nHow can we get started?", 'knowledge' => '', 'domains' => '', 'model' => 'accounts/fireworks/models/gpt-oss-120b', 'daily_limit' => 100, 'enabled' => 0 );
+        return array( 'title' => 'My assistant', 'accent' => '#72f1ff', 'launcher' => "Let's talk", 'welcome' => 'Hello! How can we help?', 'contact' => '', 'contact_label' => 'Contact our team', 'suggestions' => "What services do you offer?\nHow can we get started?", 'knowledge' => '', 'domains' => '', 'model' => 'accounts/fireworks/models/gpt-oss-120b', 'daily_limit' => 100, 'show_sources' => 0, 'enabled' => 0 );
     }
     public static function render() {
         nocache_headers();
@@ -20,13 +20,16 @@ final class Neonbreak_Client_Panel {
         ob_start(); ?>
         <section class="nb-client"><div class="nb-workspace-head"><div><p class="eyebrow">Neonbreak / Your workspace</p><h1>My AI chat</h1><p>Make it yours. Preview your changes, then save when you're ready.</p></div><span class="nb-workspace-badge"><?php echo $s['enabled'] ? 'Widget enabled' : 'Draft configuration'; ?></span></div><nav class="nb-panel-steps" aria-label="Configuration sections"><a href="#nb-appearance"><span>01</span> Appearance</a><a href="#nb-knowledge"><span>02</span> Knowledge</a><a href="#nb-connection"><span>03</span> Connection</a></nav>
         <?php if ( isset( $_GET['chat_saved'] ) ) : ?><p class="nb-client-alert" role="status"><?php echo esc_html( $_GET['chat_saved'] === 'error' ? 'Could not save. Check your connection, model and website origins.' : 'Your configuration has been saved.' ); ?></p><?php endif; ?>
+        <?php if (class_exists('NB_Site_Workspace') && NB_Site_Workspace::owner() === get_current_user_id()) : global $TRP_LANGUAGE; ?><p class="nb-client-alert"><?php echo esc_html(($TRP_LANGUAGE ?? '') === 'hr' ? 'Ovaj račun upravlja chatom na Neonbreak stranici. Spremljene promjene primjenjuju se na javni widget i demo.' : 'This account manages the Neonbreak website chat. Saved changes apply to the public widget and demo.'); ?></p><?php endif; ?>
         <div class="nb-client-grid"><form class="nb-client-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
         <input type="hidden" name="action" value="nb_client_presentation_save"><?php wp_nonce_field( 'nb_client_presentation_save' ); ?>
         <fieldset id="nb-appearance"><legend>1 · Appearance and messages</legend>
         <?php foreach ( array( 'title' => 'Assistant name', 'launcher' => 'Launcher text', 'welcome' => 'Welcome message', 'contact_label' => 'Contact button text' ) as $field => $label ) : ?><label><?php echo esc_html( $label ); ?><input name="<?php echo esc_attr( $field ); ?>" value="<?php echo esc_attr( $s[$field] ); ?>" maxlength="<?php echo $field === 'welcome' ? 400 : 100; ?>" required></label><?php endforeach; ?>
         <label>Accent colour<input type="color" name="accent" value="<?php echo esc_attr( $s['accent'] ); ?>"></label>
         <label>Contact page<input name="contact" type="url" value="<?php echo esc_attr( $s['contact'] ); ?>" placeholder="https://your-company.com/contact"></label>
-        <label>Suggested questions · one per line, maximum 3<textarea name="suggestions" rows="3" maxlength="450"><?php echo esc_textarea( $s['suggestions'] ); ?></textarea></label></fieldset>
+        <label>Suggested questions · one per line, maximum 3<textarea name="suggestions" rows="3" maxlength="450"><?php echo esc_textarea( $s['suggestions'] ); ?></textarea></label>
+        <?php global $TRP_LANGUAGE; $sources_hr = ($TRP_LANGUAGE ?? '') === 'hr'; ?>
+        <label><input type="checkbox" name="show_sources" value="1" <?php checked( $s['show_sources'], 1 ); ?>> <?php echo esc_html($sources_hr ? 'Prikaži izvore u chatu' : 'Show sources in chat'); ?></label><p><?php echo esc_html($sources_hr ? 'Zadano isključeno. Dokumenti se i dalje koriste za odgovore, ali se njihovi izvori ne prikazuju posjetiteljima.' : 'Off by default. Documents still inform answers, but their sources are hidden from visitors.'); ?></p></fieldset>
         <fieldset id="nb-knowledge"><legend>2 · Business knowledge</legend><label>Public information about your business<textarea name="knowledge" rows="10" maxlength="20000" placeholder="Services, products, frequently asked questions and contact details…"><?php echo esc_textarea( $s['knowledge'] ); ?></textarea></label><p>Use public information only. Do not include passwords or confidential data.</p></fieldset>
         <fieldset id="nb-connection"><legend>3 · Connection and website</legend><label>Fireworks API key<input name="api_key" type="password" maxlength="256" autocomplete="new-password" placeholder="<?php echo get_user_meta( get_current_user_id(), '_nb_chat_key', true ) ? 'Key saved · leave blank to keep it' : 'Paste your own Fireworks key'; ?>"></label><p>Your key is encrypted on the server and never appears in the widget.</p><label>Model ID<input name="model" value="<?php echo esc_attr( $s['model'] ); ?>" maxlength="200" required></label><label>Daily request limit<input type="number" name="daily_limit" min="1" max="1000" value="<?php echo (int) $s['daily_limit']; ?>"></label><p>A question can use two model calls. Set a spending limit in Fireworks too.</p><label>Website origins · one per line<textarea name="domains" rows="3" maxlength="2000" placeholder="https://your-company.com&#10;https://www.your-company.com"><?php echo esc_textarea( $s['domains'] ); ?></textarea></label><p>Include https:// and any port. www and non-www are separate origins.</p><label><input type="checkbox" name="enabled" value="1" <?php checked( $s['enabled'], 1 ); ?>> Enable embedded chat</label></fieldset>
         <div class="button-row"><button class="button button-primary" type="submit">Save my configuration</button><button class="button" type="submit" name="verify" value="1">Verify connection & save</button></div></form>
@@ -46,6 +49,7 @@ final class Neonbreak_Client_Panel {
         $s['domains'] = mb_substr( sanitize_textarea_field( $input['domains'] ?? '' ), 0, 2000 );
         $s['model'] = mb_substr( sanitize_text_field( $input['model'] ?? self::defaults()['model'] ), 0, 200 );
         $s['daily_limit'] = max( 1, min( 1000, absint( $input['daily_limit'] ?? 100 ) ) );
+        $s['show_sources'] = ($input['show_sources'] ?? '') === '1' || ($input['show_sources'] ?? 0) === 1 ? 1 : 0;
         $s['enabled'] = empty( $input['enabled'] ) ? 0 : 1;
         return $s;
     }

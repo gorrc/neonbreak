@@ -103,6 +103,6 @@ add_action('admin_post_nb_advanced_access', function () {
     if (!in_array($_POST['access'] ?? '', ['enable', 'disable', 'resend'], true)) wp_die('Invalid action.', '', ['response' => 400]);
     if ($resend && get_user_meta($uid, '_nb_advanced_enabled', true) !== '1') wp_die('Activate access first.', '', ['response' => 400]);
     $notification = nb_advanced_set_access($uid, $enable, $resend);
-    wp_safe_redirect(add_query_arg(['access_updated' => '1', 'activation_mail' => $notification], admin_url('options-general.php?page=nb-advanced')));
+    wp_safe_redirect(add_query_arg(['access_updated' => '1', 'activation_mail' => $notification], !empty($_POST['return_to_workspace']) ? admin_url('admin.php?page=nb-workspace-admin&tab=services') : admin_url('options-general.php?page=nb-advanced')));
     exit;
 });

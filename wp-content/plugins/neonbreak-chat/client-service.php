@@ -41,6 +41,7 @@ final class Neonbreak_Client_Service {
         $public = self::input( $_GET, 'chat' ); $uid = self::find( $public );
         if ( ! $uid ) { status_header( 404 ); exit; }
         $s = self::settings( $uid );
+        $s['_language'] = self::input($_GET, 'lang') === 'hr' ? 'hr' : 'en';
         $preview = isset( $_GET['preview'] ) && is_user_logged_in() && $uid === get_current_user_id();
         $origin = $preview ? self::host_origin() : self::origin( self::input( $_GET, 'origin' ) );
         if ( ! $preview && ( ! $s['enabled'] || ! in_array( $origin, $s['domains'], true ) ) ) { status_header( 403 ); exit; }
@@ -51,11 +52,17 @@ final class Neonbreak_Client_Service {
         header( 'X-Content-Type-Options: nosniff' ); header( 'Referrer-Policy: no-referrer' );
         $expiry = time() + 3600;
         $config = array( 'action' => 'nb_client_reply', 'endpoint' => admin_url( 'admin-ajax.php' ), 'parentOrigin' => $preview ? '' : $origin, 'request' => array( 'chat' => $public, 'origin' => $origin, 'expiry' => $expiry, 'token' => self::token( $public, $origin, $expiry ), 'preview' => $preview ? '1' : '' ) );
-        echo '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="' . esc_url( plugins_url( 'chat.css', __FILE__ ) . '?ver=0.5.0' ) . '"><style>html,body{margin:0;background:transparent}.nb-chat{--nb-chat-accent:' . esc_html( $s['accent'] ) . '}.nb-chat-floating{right:8px;bottom:8px;width:calc(100vw - 16px)}.nb-chat-panel{box-shadow:none}.nb-chat-embedded{margin:8px}.nb-chat-messages{height:230px;max-height:230px}.nb-chat-suggestions button,.nb-chat-contact a{color:var(--nb-chat-accent)}</style></head><body>';
-        echo Neonbreak_Chat::widget( ! $preview, $s );
-        echo '<script>var NeonbreakChat=' . wp_json_encode( $config, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ) . ';</script><script src="' . esc_url( plugins_url( 'chat.js', __FILE__ ) . '?ver=0.5.0' ) . '"></script></body></html>'; exit;
+        $history = NB_Conversation_History::settings($uid);
+        $inline = self::input($_GET, 'layout') === 'inline';
+        $config['inline'] = $inline;
+        $config['showSources'] = !empty($s['show_sources']);
+        $config['historyEnabled'] = $history['enabled'];
+        $config['historyDays'] = $history['days'];
+        echo '<!doctype html><html lang="' . esc_attr($s['_language']) . '"><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="' . esc_url( plugins_url( 'chat.css', __FILE__ ) . '?ver=0.7.3' ) . '"><style>html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden;background:transparent}.nb-chat{--nb-chat-accent:' . esc_html( $s['accent'] ) . '}.nb-chat-floating{right:8px;bottom:8px;width:calc(100vw - 16px)}.nb-chat-panel{box-shadow:none}.nb-chat-embedded{margin:8px}.nb-chat-messages{height:230px;max-height:230px}.nb-chat-suggestions button,.nb-chat-contact a{color:var(--nb-chat-accent)}</style></head><body>';
+        echo Neonbreak_Chat::widget( ! $preview && !$inline, $s );
+        echo '<script>var NeonbreakChat=' . wp_json_encode( $config, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ) . ';</script><script src="' . esc_url( plugins_url( 'chat.js', __FILE__ ) . '?ver=0.7.3' ) . '"></script></body></html>'; exit;
     }
-    public static function reply() {
+    public static function authorize_widget() {
         $public = self::input( $_POST, 'chat' ); $uid = self::find( $public );
         $origin = self::origin( self::input( $_POST, 'origin' ) ); $expiry = (int) self::input( $_POST, 'expiry' );
         if ( ! $uid || $expiry < time() || $expiry > time() + 3600 || ! hash_equals( self::token( $public, $origin, $expiry ), self::input( $_POST, 'token' ) ) ) wp_send_json_error( array( 'message' => 'Refresh the chat to continue.' ), 403 );
@@ -63,7 +70,16 @@ final class Neonbreak_Client_Service {
         $preview = self::input( $_POST, 'preview' ) === '1' && is_user_logged_in() && get_current_user_id() === $uid && $origin === self::host_origin();
         if ( ! $preview && ( ! $s['enabled'] || ! in_array( $origin, $s['domains'], true ) ) ) wp_send_json_error( array( 'message' => 'Chat is unavailable on this website.' ), 403 );
         if ( ! $s['_api_key'] ) wp_send_json_error( array( 'message' => 'The chat connection needs attention.' ), 503 );
-        Neonbreak_Chat::reply( $s, 'client:' . $uid );
+        return [$uid, $s, $origin];
+    }
+    public static function reply() {
+        try { [$uid, $s] = self::authorize_widget(); Neonbreak_Chat::reply($s, 'client:' . $uid); }
+        catch (Throwable $e) { Neonbreak_Chat::respond(false, ['message' => 'The assistant is temporarily unavailable. Please try again shortly.'], 502); }
+    }
+    public static function history() {
+        [$uid, $s, $origin] = self::authorize_widget();
+        $rows = NB_Conversation_History::restore($uid, self::input($_POST, 'conversation_token'), $origin);
+        wp_send_json_success(['messages' => $rows]);
     }
     public static function signup() {
         check_admin_referer( 'nb_client_signup' );
@@ -79,7 +95,7 @@ final class Neonbreak_Client_Service {
         wp_safe_redirect( add_query_arg( 'access_sent', '1', apply_filters( 'nb_client_panel_url', home_url( '/my-ai-chat/' ) ) ) ); exit;
     }
 }
-foreach ( array( 'nb_client_frame' => 'frame', 'nb_client_reply' => 'reply' ) as $action => $method ) {
+foreach ( array( 'nb_client_frame' => 'frame', 'nb_client_reply' => 'reply', 'nb_client_history' => 'history' ) as $action => $method ) {
     add_action( 'wp_ajax_' . $action, array( 'Neonbreak_Client_Service', $method ) );
     add_action( 'wp_ajax_nopriv_' . $action, array( 'Neonbreak_Client_Service', $method ) );
 }

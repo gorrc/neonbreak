@@ -390,7 +390,7 @@ final class NeonLib_Users {
 						<a class="neonlib-button" href="<?php echo esc_url( add_query_arg( 'neonlib_view', 'account', $this->account_url() ) ); ?>"><?php esc_html_e( 'Open account settings', 'neonlib-users' ); ?></a>
 					</div>
 					<?php else : ?>
-					<?php if ( $mobile_transfer_id ) : ?><h3><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Confirm your collection', 'Potvrdi svoju zbirku' ) ); ?></h3><?php else : ?><p class="neonlib-eyebrow"><?php esc_html_e( 'Add New', 'neonlib-users' ); ?></p><h3><?php esc_html_e( 'New subscription', 'neonlib-users' ); ?></h3><?php endif; ?>
+					<?php if ( $mobile_transfer_id ) : ?><h3><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Confirm your collection', 'Potvrdi svoju zbirku' ) ); ?></h3><?php else : ?><p class="neonlib-eyebrow"><?php esc_html_e( 'Add New', 'neonlib-users' ); ?></p><h3><?php esc_html_e( 'New subscription', 'neonlib-users' ); ?></h3><?php echo $this->render_subscription_structure_help(); ?><?php endif; ?>
 					<form class="neonlib-document-form" method="post" action="<?php echo esc_url( $this->account_url() ); ?>">
 						<?php wp_nonce_field( 'neonlib_subscription_action', 'neonlib_subscription_nonce' ); ?>
 						<input type="hidden" name="neonlib_action" value="<?php echo $mobile_transfer_id ? 'submit_mobile_transfer' : 'create_subscription'; ?>">
@@ -412,7 +412,9 @@ final class NeonLib_Users {
                         <?php endif; ?><div class="neonlib-form-wide neonlib-create-documents">
 							<div class="neonlib-document-toolbar"><div><h4><?php esc_html_e( 'Documents', 'neonlib-users' ); ?></h4><p><?php esc_html_e( 'Add text manually or import TXT, Markdown, HTML and CSV files. Arrange the order before submitting for administrator review.', 'neonlib-users' ); ?></p></div><div><label class="neonlib-file-button"><?php esc_html_e( 'Import files', 'neonlib-users' ); ?><input class="neonlib-document-files" type="file" multiple accept=".txt,.md,.markdown,.html,.htm,.csv,text/plain,text/markdown,text/html,text/csv"></label><button class="neonlib-add-document" type="button"><?php esc_html_e( 'Add document', 'neonlib-users' ); ?></button></div></div>
 							<div class="neonlib-document-builder"></div>
-							<details class="neonlib-raw-json"><summary><?php esc_html_e( 'Advanced: raw JSON', 'neonlib-users' ); ?></summary><label><?php esc_html_e( 'Documents (JSON)', 'neonlib-users' ); ?><textarea class="neonlib-documents-json" name="documents_json" rows="8" required><?php echo esc_textarea( (string) $new_subscription_values['documents_json'] ); ?></textarea></label></details>
+							<details class="neonlib-raw-json"><summary><?php esc_html_e( 'Advanced: raw JSON', 'neonlib-users' ); ?></summary><?php echo $this->render_documents_json_help(); ?><label><?php esc_html_e( 'Documents (JSON)', 'neonlib-users' ); ?><textarea class="neonlib-documents-json" name="documents_json" rows="8" required><?php echo esc_textarea( (string) $new_subscription_values['documents_json'] ); ?></textarea></label>
+                            <button class="neonlib-process-json" type="button"><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Load documents from JSON', 'Učitaj dokumente iz JSON-a' ) ); ?></button>
+                            <p class="neonlib-json-feedback" role="status" aria-live="polite"></p></details>
 						</div>
 						<?php if ( $mobile_transfer_id ) : ?></details><?php endif; ?><div class="neonlib-form-actions"><p class="neonlib-json-status" aria-live="polite"></p><?php if ( $mobile_transfer_id ) : ?><button type="submit" name="neonlib_action" value="save_mobile_draft" class="neonlib-button--secondary"><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Save draft', 'Spremi nacrt' ) ); ?></button><?php endif; ?><button type="submit"><?php echo esc_html( $mobile_transfer_id ? NeonLib_Mobile_Transfer::text( 'Submit for review', 'Pošalji na pregled' ) : __( 'Create and submit for review', 'neonlib-users' ) ); ?></button></div>
 					</form>
@@ -456,8 +458,10 @@ final class NeonLib_Users {
 						</div>
 						<div class="neonlib-document-builder"></div>
 						<details class="neonlib-raw-json">
-							<summary><?php esc_html_e( 'Advanced: raw JSON', 'neonlib-users' ); ?></summary>
+							<summary><?php esc_html_e( 'Advanced: raw JSON', 'neonlib-users' ); ?></summary><?php echo $this->render_documents_json_help(); ?>
 							<label><?php esc_html_e( 'Documents (JSON)', 'neonlib-users' ); ?><textarea class="neonlib-documents-json" name="documents_json" rows="8" required><?php echo esc_textarea( $documents_json ); ?></textarea></label>
+                            <button class="neonlib-process-json" type="button"><?php echo esc_html( NeonLib_Mobile_Transfer::text( 'Load documents from JSON', 'Učitaj dokumente iz JSON-a' ) ); ?></button>
+                            <p class="neonlib-json-feedback" role="status" aria-live="polite"></p>
 						</details>
 						<div class="neonlib-publish-actions"><p class="neonlib-json-status" aria-live="polite"></p><button type="submit"><?php esc_html_e( 'Submit for review', 'neonlib-users' ); ?></button></div>
 					</form>
@@ -591,6 +595,50 @@ final class NeonLib_Users {
 		}
 		$this->redirect_verification_status( 'verified' );
 	}
+
+    private function render_subscription_structure_help(): string {
+        $text = static fn( string $en, string $hr ): string => esc_html( NeonLib_Mobile_Transfer::text( $en, $hr ) );
+        $items = array(
+            array('A subscription is one collection containing one or more documents. For a book, use one document per chapter. Keep paragraphs and meaningful headings; do not create a separate document for every printed page.', 'Subscription je jedna zbirka s jednim ili više dokumenata. Za knjigu koristite jedan dokument po poglavlju. Sačuvajte odlomke i smislene naslove; ne trebate stvarati zaseban dokument za svaku tiskanu stranicu.'),
+            array('Collection details: Package ID is the unique identifier of the whole collection, for example alice.wonderland.en (3–190 characters: lowercase a–z, digits, dots, underscores and hyphens; start with a letter or digit). Title is the name readers see (up to 190 characters). Description explains the content (up to 10,000 characters). Enter a language code such as en or hr.', 'Podaci zbirke: Package ID je jedinstveni identifikator cijele zbirke, primjerice alice.wonderland.en (3–190 znakova: mala slova a–z, znamenke, točke, podvlake i crtice; prvi znak mora biti slovo ili znamenka). Title je naziv koji vide čitatelji (do 190 znakova). Description opisuje sadržaj (do 10.000 znakova). Unesite oznaku jezika, primjerice en ili hr.'),
+            array('Each document has three fields: id (a unique identifier within this collection, 1–189 characters, using the same lowercase letters, digits and separators), title (a readable chapter or document title, up to 255 characters) and content (the complete plain text). Example: id chapter-01, title Chapter 1 — Down the Rabbit-Hole. Keep document IDs stable when updating the same chapters.', 'Svaki dokument ima tri polja: id (jedinstveni identifikator unutar zbirke, 1–189 znakova, uz ista mala slova, znamenke i razdjelnike), title (čitljiv naslov poglavlja ili dokumenta, do 255 znakova) i content (cijeli obični tekst). Primjer: id chapter-01, title Poglavlje 1 — Niz zečju rupu. Pri ažuriranju istih poglavlja zadržite njihove ID-ove.'),
+            array('Ways to add documents: Add document lets you paste text manually. Import files accepts TXT, Markdown, HTML and CSV; each selected file becomes one document, and IDs are generated automatically. A single book file is not automatically divided into chapters. For chapters, import separate files such as 01.txt, 02.txt and 03.txt, then check their titles and order.', 'Načini unosa: Add document omogućuje ručni unos ili lijepljenje teksta. Import files prihvaća TXT, Markdown, HTML i CSV; svaka odabrana datoteka postaje jedan dokument, a ID se izrađuje automatski. Jedna datoteka knjige ne dijeli se automatski na poglavlja. Za poglavlja uvezite zasebne datoteke, primjerice 01.txt, 02.txt i 03.txt, pa provjerite naslove i redoslijed.'),
+            array('For JSON, open Advanced: raw JSON, paste an array containing only id, title and content for each document, then click Load documents from JSON. A detailed format example is shown there. Review the loaded documents above. Use Up and Down to set the reading order; numeric IDs alone do not determine it.', 'Za JSON otvorite Advanced: raw JSON, zalijepite niz u kojem svaki dokument sadrži samo id, title i content te kliknite Učitaj dokumente iz JSON-a. Ondje je i detaljan primjer formata. Pregledajte učitane dokumente iznad. Gumbima Up i Down odredite redoslijed čitanja; broj u ID-u sam po sebi ne određuje redoslijed.'),
+            array('Limits: 1–500 documents per collection; up to 1 MiB (1,048,576 bytes) of UTF-8 text per document and 8 MiB (8,388,608 bytes) of document text in total. The text limit is measured in bytes, not a fixed number of characters: accented letters and other symbols may use several bytes. Split very long chapters into clearly named parts. Server upload/request limits can be lower once JSON and form overhead are included.', 'Ograničenja: 1–500 dokumenata po zbirci; do 1 MiB (1.048.576 bajtova) UTF-8 teksta po dokumentu i ukupno do 8 MiB (8.388.608 bajtova) teksta svih dokumenata. Limit teksta računa se u bajtovima, a ne u fiksnom broju znakova: slova s kvačicama i drugi simboli mogu zauzeti više bajtova. Vrlo duga poglavlja podijelite u jasno imenovane dijelove. Poslužitelj može imati niži limit zahtjeva kada se pribroje JSON i ostala polja obrasca.'),
+            array('Before submitting: check the text, chapter order, language, description and sharing rights. Choose public for a collection intended for the public catalogue; private is not intended for public discovery. Importing files or loading JSON only fills this form. Create and submit for review sends it for administrator review; it does not publish it immediately. Search vectors are prepared separately from the saved documents, so you do not need to enter vectors.', 'Prije slanja provjerite tekst, redoslijed poglavlja, jezik, opis i pravo dijeljenja sadržaja. Odaberite public za zbirku namijenjenu javnom katalogu; private nije namijenjen javnom pronalaženju. Uvoz datoteka ili učitavanje JSON-a samo popunjava obrazac. Create and submit for review šalje zbirku administratoru na pregled, ali je ne objavljuje odmah. Vektori za pretraživanje pripremaju se zasebno iz spremljenih dokumenata; ne trebate ih unositi.'),
+        );
+        $html = '<section class="neonlib-structure-help"><h4>' . $text('How to prepare your collection', 'Kako pripremiti zbirku') . '</h4><p>' . $text('A short guide to chapters, document fields and size limits before you start.', 'Upute za poglavlja, polja dokumenata i ograničenja prije početka unosa.') . '</p><ol>';
+        foreach ( $items as $item ) {
+            $html .= '<li>' . $text( $item[0], $item[1] ) . '</li>';
+        }
+        return $html . '</ol></section>';
+    }
+
+	private function render_documents_json_help(): string {
+        $text = static fn( string $en, string $hr ): string => esc_html( NeonLib_Mobile_Transfer::text( $en, $hr ) );
+        $example = wp_json_encode(
+            array(
+                array( 'id' => 'chapter-01', 'title' => 'Chapter 1', 'content' => "First paragraph.\n\nSecond paragraph." ),
+                array( 'id' => 'chapter-02', 'title' => 'Chapter 2', 'content' => 'Text of the second document.' ),
+            ),
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+        );
+        return '<div class="neonlib-json-help"><p>' . $text(
+            'Paste a JSON array of documents, as in the example below. Each object becomes one document in this collection. Do not wrap the array in a "documents" or "collection" object.',
+            'Zalijepite JSON niz dokumenata kao u primjeru ispod. Svaki objekt postaje jedan dokument u zbirci. Nemojte niz stavljati unutar objekta "documents" ili "collection".'
+        ) . '</p><ul><li><code>id</code> — ' . $text(
+            'A unique document identifier, for example chapter-01. Use letters a–z, digits, hyphens, underscores or dots.',
+            'Jedinstveni identifikator dokumenta, primjerice chapter-01. Koristite slova a–z, znamenke, crtice, podvlake ili točke.'
+        ) . '</li><li><code>title</code> — ' . $text( 'The document title shown to readers.', 'Naslov dokumenta koji vide čitatelji.' )
+        . '</li><li><code>content</code> — ' . $text( 'The full document text, as a JSON string.', 'Cijeli tekst dokumenta kao JSON tekstualna vrijednost.' )
+        . '</li></ul><pre><code>' . esc_html( $example ) . '</code></pre><p>' . $text(
+            'Use double quotes. Within text, write line breaks as \n and escape double quotes as \". Separate documents with commas; do not add a comma after the last document. For a book, you can use one document per chapter. Search vectors are not entered here.',
+            'Koristite dvostruke navodnike. Unutar teksta prijelom retka zapišite kao \n, a dvostruke navodnike kao \". Dokumente odvojite zarezima, bez zareza iza zadnjeg dokumenta. Za knjigu možete unijeti jedno poglavlje po dokumentu. Vektori za pretraživanje ne unose se ovdje.'
+        ) . '</p><p>' . $text(
+            'For an easier alternative, use Import files or Add document instead of editing JSON.',
+            'Za jednostavniji unos koristite Import files (Uvezi datoteke) ili Add document (Dodaj dokument) umjesto uređivanja JSON-a.'
+        ) . '</p></div>';
+    }
 
 	private function requested_ai_connection(): string {
 		$id = wp_unslash( $_GET['neonlib_ai_connection'] ?? '' );

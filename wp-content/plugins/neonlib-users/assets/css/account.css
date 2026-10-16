@@ -360,9 +360,36 @@
 	color: var(--neonlib-muted);
 }
 
-.neonlib-file-button {
-	display: inline-block;
+/* Keep the description above its controls rather than squeezing it beside them. */
+.neonlib-document-toolbar > div:first-child {
+    display: block;
+    flex: 1 1 20rem;
+    min-width: 0;
+}
+
+.neonlib-document-toolbar > div:last-child {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.neonlib-document-toolbar .neonlib-file-button,
+.neonlib-document-toolbar .neonlib-add-document {
+    min-height: 44px;
+    margin: 0;
+    font: inherit;
+    font-weight: 600;
+    line-height: 1.25;
+    white-space: nowrap;
+}
+
+.neonlib-panel .neonlib-file-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
 	width: auto;
+	margin: 0;
 	padding: 0.75rem 1rem;
 	border-radius: 999px;
 	background: var(--neonlib-accent);
@@ -470,6 +497,19 @@
 		flex-wrap: wrap;
 	}
 
+	.neonlib-document-toolbar > div:first-child {
+		flex-basis: auto;
+	}
+
+	.neonlib-document-toolbar > div:last-child {
+		width: 100%;
+	}
+
+	.neonlib-document-toolbar .neonlib-file-button,
+	.neonlib-document-toolbar .neonlib-add-document {
+		flex: 1 1 auto;
+	}
+
 	.neonlib-document-card {
 		grid-template-columns: 1fr;
 	}
@@ -517,3 +557,17 @@
 .neonlib-form-actions { flex-wrap: wrap; }
 
 .neonlib-transfer-qr svg { display: block; width: 100%; height: auto; }
+
+.neonlib-json-help { margin: 1rem 0; overflow-wrap: anywhere; }
+.neonlib-json-help p { margin: 0.75rem 0; }
+.neonlib-json-help pre { max-width: 100%; overflow-x: auto; padding: 1rem; border: 1px solid var(--neonlib-border); border-radius: 8px; white-space: pre-wrap; }
+.neonlib-json-help code { font-size: 0.9em; }
+
+.neonlib-raw-json .neonlib-process-json {
+	margin-top: 0.75rem;
+}
+
+.neonlib-structure-help { margin: 1rem 0 1.5rem; padding: 1rem; border: 1px solid var(--neonlib-border); border-radius: 12px; overflow-wrap: anywhere; }
+.neonlib-structure-help h4 { margin: 0 0 0.5rem; }
+.neonlib-structure-help ol { padding-inline-start: 1.4rem; margin-bottom: 0; }
+.neonlib-structure-help li + li { margin-top: 0.85rem; }
